@@ -1,6 +1,7 @@
 {
     "name": "ticketswap/phpstan-error-formatter",
     "description": "A minimalistic error formatter for PHPStan",
+    "keywords": ["phpstan", "dev"],
     "type": "phpstan-extension",
     "require": {
         "phpstan/phpstan": "^1.11",
