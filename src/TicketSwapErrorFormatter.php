@@ -18,6 +18,7 @@ final readonly class TicketSwapErrorFormatter implements ErrorFormatter
     private const string LINK_FORMAT_GITHUB_ACTIONS = "↳ {relativePath}:{line}\n";
     private const string LINK_FORMAT_WARP = "↳ {relativePath}:{line}\n";
     private const string LINK_FORMAT_PHPSTORM = "↳ file://{absolutePath}:{line}\n";
+    private const string LINK_FORMAT_WITHOUT_EDITOR = "↳ {relativePath}:{line}\n";
 
     private string $linkFormat;
 
@@ -89,14 +90,14 @@ final readonly class TicketSwapErrorFormatter implements ErrorFormatter
                                 (int) $error->getLine(),
                                 $error->getFilePath(),
                                 $this->relativePathHelper->getRelativePath($error->getFilePath()),
-                                $this->editorUrl ,
+                                $this->editorUrl,
                             ),
                             $error->getTraitFilePath() !== null ? $this::link(
                                 $this->linkFormat,
                                 (int) $error->getLine(),
                                 $error->getTraitFilePath(),
                                 $this->relativePathHelper->getRelativePath($error->getTraitFilePath()),
-                                $this->editorUrl ,
+                                $this->editorUrl,
                             ) : '',
                         ]),
                     ],
@@ -126,7 +127,7 @@ final readonly class TicketSwapErrorFormatter implements ErrorFormatter
         ?string $editorUrl
     ) : string {
         if ($editorUrl === null) {
-            return sprintf('%s:%d', $relativePath, $line);
+            $format = self::LINK_FORMAT_WITHOUT_EDITOR;
         }
 
         return strtr(
