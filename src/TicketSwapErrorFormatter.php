@@ -100,6 +100,11 @@ final readonly class TicketSwapErrorFormatter implements ErrorFormatter
             );
         }
 
+        if ($this->editorUrl === null) {
+            $output->writeLineFormatted('<comment>Configure the `editorUrl` to make the filenames clickable.</comment>');
+            $output->writeLineFormatted('');
+        }
+
         $output->writeLineFormatted(
             sprintf(
                 '<bg=red;options=bold>Found %d error%s</>',
@@ -108,11 +113,6 @@ final readonly class TicketSwapErrorFormatter implements ErrorFormatter
             )
         );
         $output->writeLineFormatted('');
-
-        if ($this->editorUrl === null) {
-            $output->writeLineFormatted('<comment>Configure the `editorUrl` to make the filenames clickable.</comment>');
-            $output->writeLineFormatted('');
-        }
 
         $this->ciDetectedErrorFormatter->formatErrors($analysisResult, $output);
 
