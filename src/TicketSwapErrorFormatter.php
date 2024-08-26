@@ -43,11 +43,6 @@ final readonly class TicketSwapErrorFormatter implements ErrorFormatter
     #[Override]
     public function formatErrors(AnalysisResult $analysisResult, Output $output) : int
     {
-        if ($this->editorUrl === null) {
-            $output->writeLineFormatted('<error>Please configure the `editorUrl`.</error>');
-            $output->writeLineFormatted('');
-        }
-
         if (! $analysisResult->hasErrors()) {
             $output->writeLineFormatted('<fg=green;options=bold>No errors</>');
             $output->writeLineFormatted('');
@@ -113,6 +108,11 @@ final readonly class TicketSwapErrorFormatter implements ErrorFormatter
             )
         );
         $output->writeLineFormatted('');
+
+        if ($this->editorUrl === null) {
+            $output->writeLineFormatted('<comment>Configure the `editorUrl` to make the filenames clickable.</comment>');
+            $output->writeLineFormatted('');
+        }
 
         $this->ciDetectedErrorFormatter->formatErrors($analysisResult, $output);
 
