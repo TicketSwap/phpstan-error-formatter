@@ -2,6 +2,9 @@
     A minimalistic error formatter for PHPStan
 </p>
 
+<p align="center">
+    <img src="https://raw.githubusercontent.com/TicketSwap/phpstan-error-formatter/main/screenshot.png" alt="Screenshot" height="300">
+</p>
 ------
 
 ## Installation
