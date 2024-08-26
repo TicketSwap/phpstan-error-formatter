@@ -12,5 +12,12 @@
         "psr-4": {
             "Ticketswap\\PhpstanErrorFormatter\\": "src/"
         }
+    },
+    "extra": {
+        "phpstan": {
+            "includes": [
+                "extension.neon"
+            ]
+        }
     }
 }
