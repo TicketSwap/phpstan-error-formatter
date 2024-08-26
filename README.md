@@ -17,3 +17,8 @@ Configure PHPStan to use the `ticketswap` error formatter:
 parameters:
     errorFormat: ticketswap
 ```
+
+When you haven't done so, make sure to configure the [editorUrl](https://phpstan.org/user-guide/output-format#opening-file-in-an-editor):
+```neon
+parameters:
+    editorUrl: 'phpstorm://open?file=%%file%%&line=%%line%%'
