@@ -11,7 +11,7 @@
 ## Installation
 
 ```command
-$ composer require ticketswap/phpstan-error-formatter
+$ composer require --dev ticketswap/phpstan-error-formatter
 ```
 
 ## Usage
