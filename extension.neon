@@ -1,0 +1,6 @@
+services:
+    errorFormatter.ticketswap:
+        class: TicketSwap\PHPstanErrorFormatter\TicketSwapErrorFormatter
+        arguments:
+            relativePathHelper: '@simpleRelativePathHelper'
+            editorUrl: '%editorUrl%'
