@@ -27,6 +27,7 @@ If you don't want to use `phpstan/extension-installer`, include extension.neon i
 includes:
     - vendor/ticketswap/phpstan-error-formatter/extension.neon
 ```
+</details>
 
 ## Usage
 
