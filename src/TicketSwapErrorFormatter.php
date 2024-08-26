@@ -42,6 +42,11 @@ final readonly class TicketSwapErrorFormatter implements ErrorFormatter
     #[Override]
     public function formatErrors(AnalysisResult $analysisResult, Output $output) : int
     {
+        if ($this->editorUrl === null) {
+            $output->writeLineFormatted('<error>Please configure the `editorUrl`.</error>');
+            $output->writeLineFormatted('');
+        }
+
         if (! $analysisResult->hasErrors()) {
             $output->writeLineFormatted('<fg=green;options=bold>No errors</>');
             $output->writeLineFormatted('');
@@ -84,14 +89,14 @@ final readonly class TicketSwapErrorFormatter implements ErrorFormatter
                                 (int) $error->getLine(),
                                 $error->getFilePath(),
                                 $this->relativePathHelper->getRelativePath($error->getFilePath()),
-                                $this->editorUrl ?? '',
+                                $this->editorUrl ,
                             ),
                             $error->getTraitFilePath() !== null ? $this::link(
                                 $this->linkFormat,
                                 (int) $error->getLine(),
                                 $error->getTraitFilePath(),
                                 $this->relativePathHelper->getRelativePath($error->getTraitFilePath()),
-                                $this->editorUrl ?? '',
+                                $this->editorUrl ,
                             ) : '',
                         ]),
                     ],
@@ -118,8 +123,12 @@ final readonly class TicketSwapErrorFormatter implements ErrorFormatter
         int $line,
         string $absolutePath,
         string $relativePath,
-        string $editorUrl) : string
-    {
+        ?string $editorUrl
+    ) : string {
+        if ($editorUrl === null) {
+            return sprintf('%s:%d', $relativePath, $line);
+        }
+
         return strtr(
             $format,
             [
