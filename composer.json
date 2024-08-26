@@ -10,7 +10,7 @@
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "TicketSwap\\PHPstanErrorFormatter": "src/"
+            "TicketSwap\\PHPstanErrorFormatter\\": "src/"
         }
     },
     "extra": {
