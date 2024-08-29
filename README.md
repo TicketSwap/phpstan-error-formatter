@@ -8,6 +8,14 @@
 
 ------
 
+## Features
+
+* Every error has it's own clickable file + line link (default formatter shows the file once, and then displays the line + errors)
+* Errors don't wrap, so they take your while terminal (default formatter wraps in a table)
+* Highlighting of variables, fully qualified class names and other common types. This is done naively and there are cases where it does not work.
+* Long file paths are truncated visually (src/App/../Entity/User.php) while keeping the clickable link intact
+* The filename + line is clickable depending on your terminal and their support for clickable links. For example, in PHPStorm's built-in editor, it doesn't work and there we print `file:///Volumes/CS/www/src/App/User.php`.
+
 ## Installation
 
 To use this extension, require it in [Composer](https://getcomposer.org/):
