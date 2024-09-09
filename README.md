@@ -6,6 +6,13 @@
     <img src="https://raw.githubusercontent.com/TicketSwap/phpstan-error-formatter/main/screenshot.png" alt="Screenshot" height="300">
 </p>
 
+<p align="center">
+    <a href="https://packagist.org/packages/ticketswap/phpstan-error-formatter"><img src="https://poser.pugx.org/ticketswap/phpstan-error-formatter/v?style=for-the-badge" alt="Latest Stable Version"></a>
+    <a href="https://packagist.org/packages/ticketswap/phpstan-error-formatter"><img src="https://poser.pugx.org/ticketswap/phpstan-error-formatter/require/php?style=for-the-badge" alt="PHP Version Require"></a>
+    <a href="https://packagist.org/packages/ticketswap/phpstan-error-formatter"><img src="https://poser.pugx.org/ticketswap/phpstan-error-formatter/downloads?style=for-the-badge" alt="Total Downloads"></a>
+    <a href="https://packagist.org/packages/ticketswap/phpstan-error-formatter"><img src="https://poser.pugx.org/ticketswap/phpstan-error-formatter/license?style=for-the-badge" alt="License"></a>
+</p>
+
 ------
 
 ## Features
