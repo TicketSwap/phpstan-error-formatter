@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace TicketSwap\PHPstanErrorFormatter;
 
-use Override;
 use PHPStan\Command\AnalysisResult;
 use PHPStan\Command\ErrorFormatter\CiDetectedErrorFormatter;
 use PHPStan\Command\ErrorFormatter\ErrorFormatter;
@@ -13,12 +12,12 @@ use PHPStan\File\RelativePathHelper;
 
 final readonly class TicketSwapErrorFormatter implements ErrorFormatter
 {
-    private const string FORMAT = "{message}\n{links}";
-    private const string LINK_FORMAT_DEFAULT = "↳ <href={editorUrl}>{shortPath}:{line}</>\n";
-    private const string LINK_FORMAT_GITHUB_ACTIONS = "↳ {relativePath}:{line}\n";
-    private const string LINK_FORMAT_WARP = "↳ {relativePath}:{line}\n";
-    private const string LINK_FORMAT_PHPSTORM = "↳ file://{absolutePath}:{line}\n";
-    private const string LINK_FORMAT_WITHOUT_EDITOR = "↳ {relativePath}:{line}\n";
+    private const FORMAT = "{message}\n{links}";
+    private const LINK_FORMAT_DEFAULT = "↳ <href={editorUrl}>{shortPath}:{line}</>\n";
+    private const LINK_FORMAT_GITHUB_ACTIONS = "↳ {relativePath}:{line}\n";
+    private const LINK_FORMAT_WARP = "↳ {relativePath}:{line}\n";
+    private const LINK_FORMAT_PHPSTORM = "↳ file://{absolutePath}:{line}\n";
+    private const LINK_FORMAT_WITHOUT_EDITOR = "↳ {relativePath}:{line}\n";
 
     private string $linkFormat;
 
@@ -40,7 +39,6 @@ final readonly class TicketSwapErrorFormatter implements ErrorFormatter
         };
     }
 
-    #[Override]
     public function formatErrors(AnalysisResult $analysisResult, Output $output) : int
     {
         if (! $analysisResult->hasErrors()) {
