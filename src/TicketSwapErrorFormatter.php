@@ -133,8 +133,8 @@ final readonly class TicketSwapErrorFormatter implements ErrorFormatter
             [
                 '{absolutePath}' => $absolutePath,
                 '{editorUrl}' => $editorUrl === null ? '' : str_replace(
-                    ['%file%', '%line%'],
-                    [$absolutePath, $line],
+                    ['%relFile%', '%file%', '%line%'],
+                    [$relativePath, $absolutePath, $line],
                     $editorUrl,
                 ),
                 '{relativePath}' => $relativePath,
