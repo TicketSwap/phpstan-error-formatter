@@ -57,7 +57,7 @@ final readonly class TicketSwapErrorFormatter implements ErrorFormatter
             );
         }
 
-        $projectConfigFile = 'phpstan.php';
+        $projectConfigFile = 'phpstan.neon';
         if ($analysisResult->getProjectConfigFile() !== null) {
             $projectConfigFile = $this->relativePathHelper->getRelativePath($analysisResult->getProjectConfigFile());
         }
