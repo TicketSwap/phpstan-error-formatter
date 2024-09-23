@@ -4,8 +4,8 @@
     "keywords": ["phpstan", "dev"],
     "type": "phpstan-extension",
     "require": {
-        "phpstan/phpstan": "^1.11",
-        "php": "^8.2"
+        "php": "^8.2",
+        "phpstan/phpstan": "^1.12.4"
     },
     "license": "MIT",
     "autoload": {
@@ -19,5 +19,8 @@
                 "extension.neon"
             ]
         }
+    },
+    "config": {
+        "sort-packages": true
     }
 }
