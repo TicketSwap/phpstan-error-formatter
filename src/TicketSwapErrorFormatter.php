@@ -75,6 +75,7 @@ final readonly class TicketSwapErrorFormatter implements ErrorFormatter
                                 $error->getTip()
                             ) : null,
                             $error->getIdentifier(),
+                            $output->isDecorated(),
                         ),
                         '{identifier}' => $error->getIdentifier(),
                         '{links}' => implode([
@@ -84,6 +85,7 @@ final readonly class TicketSwapErrorFormatter implements ErrorFormatter
                                 $error->getFilePath(),
                                 $this->relativePathHelper->getRelativePath($error->getFilePath()),
                                 $this->editorUrl,
+                                $output->isDecorated(),
                             ),
                             $error->getTraitFilePath() !== null ? $this::link(
                                 $this->linkFormat,
@@ -91,6 +93,7 @@ final readonly class TicketSwapErrorFormatter implements ErrorFormatter
                                 $error->getTraitFilePath(),
                                 $this->relativePathHelper->getRelativePath($error->getTraitFilePath()),
                                 $this->editorUrl,
+                                $output->isDecorated(),
                             ) : '',
                         ]),
                     ],
@@ -122,9 +125,10 @@ final readonly class TicketSwapErrorFormatter implements ErrorFormatter
         int $line,
         string $absolutePath,
         string $relativePath,
-        ?string $editorUrl
+        ?string $editorUrl,
+        bool $isDecorated,
     ) : string {
-        if ($editorUrl === null) {
+        if (!$isDecorated || $editorUrl === null) {
             $format = self::LINK_FORMAT_WITHOUT_EDITOR;
         }
 
@@ -161,8 +165,12 @@ final readonly class TicketSwapErrorFormatter implements ErrorFormatter
         );
     }
 
-    public static function highlight(string $message, ?string $tip, ?string $identifier) : string
+    public static function highlight(string $message, ?string $tip, ?string $identifier, bool $isDecorated) : string
     {
+        if (!$isDecorated) {
+            return $message;
+        }
+
         if (str_starts_with($message, 'Ignored error pattern')) {
             return $message;
         }
