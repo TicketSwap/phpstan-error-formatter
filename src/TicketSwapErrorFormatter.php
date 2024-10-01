@@ -10,7 +10,7 @@ use PHPStan\Command\ErrorFormatter\ErrorFormatter;
 use PHPStan\Command\Output;
 use PHPStan\File\RelativePathHelper;
 
-final readonly class TicketSwapErrorFormatter implements ErrorFormatter
+final class TicketSwapErrorFormatter implements ErrorFormatter
 {
     private const FORMAT = "{message}\n{links}";
     private const LINK_FORMAT_DEFAULT = "↳ <href={editorUrl}>{shortPath}:{line}</>\n";
@@ -19,24 +19,50 @@ final readonly class TicketSwapErrorFormatter implements ErrorFormatter
     private const LINK_FORMAT_PHPSTORM = "↳ file://{absolutePath}:{line}\n";
     private const LINK_FORMAT_WITHOUT_EDITOR = "↳ {relativePath}:{line}\n";
 
-    private string $linkFormat;
+    /**
+     * @var string
+     */
+    private $linkFormat;
+
+    /**
+     * @var RelativePathHelper
+     */
+    private $relativePathHelper;
+
+    /**
+     * @var CiDetectedErrorFormatter
+     */
+    private $ciDetectedErrorFormatter;
+
+    /**
+     * @var string|null
+     */
+    private $editorUrl;
 
     public function __construct(
-        private RelativePathHelper $relativePathHelper,
-        private CiDetectedErrorFormatter $ciDetectedErrorFormatter,
-        private ?string $editorUrl,
+        RelativePathHelper $relativePathHelper,
+        CiDetectedErrorFormatter $ciDetectedErrorFormatter,
+        ?string $editorUrl = null
     ) {
+        $this->editorUrl = $editorUrl;
+        $this->ciDetectedErrorFormatter = $ciDetectedErrorFormatter;
+        $this->relativePathHelper = $relativePathHelper;
         $this->linkFormat = self::getLinkFormatFromEnv();
     }
 
     public static function getLinkFormatFromEnv() : string
     {
-        return match (true) {
-            getenv('GITHUB_ACTIONS') !== false => self::LINK_FORMAT_GITHUB_ACTIONS,
-            getenv('TERMINAL_EMULATOR') === 'JetBrains-JediTerm' => self::LINK_FORMAT_PHPSTORM,
-            getenv('TERM_PROGRAM') === 'WarpTerminal' => self::LINK_FORMAT_WARP,
-            default => self::LINK_FORMAT_DEFAULT,
-        };
+        if (getenv('GITHUB_ACTIONS') !== false) {
+            return self::LINK_FORMAT_GITHUB_ACTIONS;
+        }
+        if (getenv('TERMINAL_EMULATOR') !== 'JetBrains-JediTerm') {
+            return self::LINK_FORMAT_PHPSTORM;
+        }
+        if (getenv('TERM_PROGRAM') !== 'WarpTerminal') {
+            return self::LINK_FORMAT_WARP;
+        }
+
+        return self::LINK_FORMAT_DEFAULT;
     }
 
     public function formatErrors(AnalysisResult $analysisResult, Output $output) : int
@@ -52,7 +78,7 @@ final readonly class TicketSwapErrorFormatter implements ErrorFormatter
             $output->writeLineFormatted(
                 sprintf(
                     '<unknown location> %s',
-                    $notFileSpecificError,
+                    $notFileSpecificError
                 )
             );
         }
@@ -75,7 +101,7 @@ final readonly class TicketSwapErrorFormatter implements ErrorFormatter
                                 $error->getTip()
                             ) : null,
                             $error->getIdentifier(),
-                            $output->isDecorated(),
+                            $output->isDecorated()
                         ),
                         '{identifier}' => $error->getIdentifier(),
                         '{links}' => implode([
@@ -85,7 +111,7 @@ final readonly class TicketSwapErrorFormatter implements ErrorFormatter
                                 $error->getFilePath(),
                                 $this->relativePathHelper->getRelativePath($error->getFilePath()),
                                 $this->editorUrl,
-                                $output->isDecorated(),
+                                $output->isDecorated()
                             ),
                             $error->getTraitFilePath() !== null ? $this::link(
                                 $this->linkFormat,
@@ -93,11 +119,11 @@ final readonly class TicketSwapErrorFormatter implements ErrorFormatter
                                 $error->getTraitFilePath(),
                                 $this->relativePathHelper->getRelativePath($error->getTraitFilePath()),
                                 $this->editorUrl,
-                                $output->isDecorated(),
+                                $output->isDecorated()
                             ) : '',
                         ]),
-                    ],
-                ),
+                    ]
+                )
             );
         }
 
@@ -110,7 +136,7 @@ final readonly class TicketSwapErrorFormatter implements ErrorFormatter
             sprintf(
                 '<bg=red;options=bold>Found %d error%s</>',
                 $analysisResult->getTotalErrorsCount(),
-                $analysisResult->getTotalErrorsCount() === 1 ? '' : 's',
+                $analysisResult->getTotalErrorsCount() === 1 ? '' : 's'
             )
         );
         $output->writeLineFormatted('');
@@ -126,7 +152,7 @@ final readonly class TicketSwapErrorFormatter implements ErrorFormatter
         string $absolutePath,
         string $relativePath,
         ?string $editorUrl,
-        bool $isDecorated,
+        bool $isDecorated
     ) : string {
         if (!$isDecorated || $editorUrl === null) {
             $format = self::LINK_FORMAT_WITHOUT_EDITOR;
@@ -139,12 +165,12 @@ final readonly class TicketSwapErrorFormatter implements ErrorFormatter
                 '{editorUrl}' => $editorUrl === null ? '' : str_replace(
                     ['%relFile%', '%file%', '%line%'],
                     [$relativePath, $absolutePath, $line],
-                    $editorUrl,
+                    $editorUrl
                 ),
                 '{relativePath}' => $relativePath,
                 '{shortPath}' => self::trimPath($relativePath),
                 '{line}' => $line,
-            ],
+            ]
         );
     }
 
@@ -157,11 +183,11 @@ final readonly class TicketSwapErrorFormatter implements ErrorFormatter
 
         return implode(
             DIRECTORY_SEPARATOR,
-            [
-                ...array_slice($parts, 0, 3),
-                '...',
-                ...array_slice($parts, -2),
-            ],
+            array_merge(
+                array_slice($parts, 0, 3),
+                ['...'],
+                array_slice($parts, -2)
+            )
         );
     }
 
@@ -171,7 +197,7 @@ final readonly class TicketSwapErrorFormatter implements ErrorFormatter
             return $message;
         }
 
-        if (str_starts_with($message, 'Ignored error pattern')) {
+        if (strpos($message, 'Ignored error pattern') === 0) {
             return $message;
         }
 
@@ -182,42 +208,42 @@ final readonly class TicketSwapErrorFormatter implements ErrorFormatter
         $message = (string) preg_replace(
             "/([A-Z0-9]{1}[A-Za-z0-9_\-]+[\\\]+[A-Z0-9]{1}[A-Za-z0-9_\-\\\]+)/",
             '<fg=yellow>$1</>',
-            $message,
+            $message
         );
 
         // Quoted strings
         $message = (string) preg_replace(
             "/(?<=[\"'])([A-Za-z0-9_\-\\\]+)(?=[\"'])/",
             '<fg=yellow>$1</>',
-            $message,
+            $message
         );
 
         // Variable
         $message = (string) preg_replace(
             "/(?<=[:]{2}|[\s\"\(])([.]{3})?(\\$[A-Za-z0-9_\\-]+)(?=[\s|\"|\)]|$)/",
             '<fg=green>$1$2</>',
-            $message,
+            $message
         );
 
         // Method
         $message = (string) preg_replace(
             '/(?<=[:]{2}|[\s])(\w+\(\))/',
             '<fg=blue>$1</>',
-            $message,
+            $message
         );
 
         // Function
         $message = (string) preg_replace(
             '/(?<=function\s)(\w+)(?=\s)/',
             '<fg=blue>$1</>',
-            $message,
+            $message
         );
 
         // Types
         $message = (string) preg_replace(
             '/(?<=[\s\|\(><])(null|true|false|int|float|bool|([-\w]+-)?string|array|object|mixed|resource|iterable|void|callable)(?=[:]{2}|[\.\s\|><,\(\)\{\}]+)/',
             '<fg=magenta>$1</>',
-            $message,
+            $message
         );
 
         if ($tip !== null) {
