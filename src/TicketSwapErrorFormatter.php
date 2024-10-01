@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace TicketSwap\PHPstanErrorFormatter;
+namespace TicketSwap\PHPStanErrorFormatter;
 
 use PHPStan\Command\AnalysisResult;
 use PHPStan\Command\ErrorFormatter\CiDetectedErrorFormatter;
