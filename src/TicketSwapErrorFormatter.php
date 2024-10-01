@@ -13,22 +13,28 @@ use PHPStan\File\RelativePathHelper;
 final class TicketSwapErrorFormatter implements ErrorFormatter
 {
     private const FORMAT = "{message}\n{links}";
-    private const LINK_FORMAT_DEFAULT = "↳ <href={editorUrl}>{shortPath}:{line}</>\n";
-    private const LINK_FORMAT_GITHUB_ACTIONS = "↳ {relativePath}:{line}\n";
-    private const LINK_FORMAT_WARP = "↳ {relativePath}:{line}\n";
-    private const LINK_FORMAT_PHPSTORM = "↳ file://{absolutePath}:{line}\n";
-    private const LINK_FORMAT_WITHOUT_EDITOR = "↳ {relativePath}:{line}\n";
+    public const LINK_FORMAT_DEFAULT = "↳ <href={editorUrl}>{shortPath}:{line}</>\n";
+    public const LINK_FORMAT_GITHUB_ACTIONS = "↳ {relativePath}:{line}\n";
+    public const LINK_FORMAT_WARP = "↳ {relativePath}:{line}\n";
+    public const LINK_FORMAT_PHPSTORM = "↳ file://{absolutePath}:{line}\n";
+    public const LINK_FORMAT_WITHOUT_EDITOR = "↳ {relativePath}:{line}\n";
 
+    /**
+     * @var self::LINK_FORMAT_*
+     */
     private string $linkFormat;
 
     public function __construct(
         private readonly RelativePathHelper $relativePathHelper,
-        private readonly CiDetectedErrorFormatter $ciDetectedErrorFormatter,
-        private readonly ?string $editorUrl,
+        private readonly ErrorFormatter $ciDetectedErrorFormatter,
+        private readonly ?string $editorUrl = null,
     ) {
         $this->linkFormat = self::getLinkFormatFromEnv();
     }
 
+    /**
+     * @return self::LINK_FORMAT_*
+     */
     public static function getLinkFormatFromEnv() : string
     {
         return match (true) {
@@ -120,6 +126,9 @@ final class TicketSwapErrorFormatter implements ErrorFormatter
         return 1;
     }
 
+    /**
+     * @param self::LINK_FORMAT_* $format
+     */
     public static function link(
         string $format,
         int $line,

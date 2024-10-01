@@ -13,6 +13,11 @@
             "TicketSwap\\PHPStanErrorFormatter\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "TicketSwap\\PHPStanErrorFormatter\\": "tests/"
+        }
+    },
     "extra": {
         "phpstan": {
             "includes": [
@@ -22,5 +27,8 @@
     },
     "config": {
         "sort-packages": true
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10.5.35"
     }
 }
