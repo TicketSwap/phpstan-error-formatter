@@ -16,6 +16,7 @@ jobs:
               php:
                 - '7.2'
                 - '8.3'
+                - '8.4'
 
         runs-on: ubuntu-latest
 
