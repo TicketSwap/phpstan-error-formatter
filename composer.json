@@ -4,7 +4,7 @@
     "keywords": ["phpstan", "dev"],
     "type": "phpstan-extension",
     "require": {
-        "php": "^8.2",
+        "php": "^8.1",
         "phpstan/phpstan": "^1.12.4"
     },
     "license": "MIT",
