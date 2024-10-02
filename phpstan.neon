@@ -4,6 +4,6 @@ parameters:
     level: 8
     paths:
         - src
-    phpVersion: 70200
+    phpVersion: 80200
     errorFormat: ticketswap
     editorUrl: 'phpstorm://open?file=%%file%%&line=%%line%%'
