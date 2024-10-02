@@ -10,7 +10,7 @@ use PHPStan\Command\ErrorFormatter\ErrorFormatter;
 use PHPStan\Command\Output;
 use PHPStan\File\RelativePathHelper;
 
-final readonly class TicketSwapErrorFormatter implements ErrorFormatter
+final class TicketSwapErrorFormatter implements ErrorFormatter
 {
     private const FORMAT = "{message}\n{links}";
     private const LINK_FORMAT_DEFAULT = "↳ <href={editorUrl}>{shortPath}:{line}</>\n";
@@ -22,9 +22,9 @@ final readonly class TicketSwapErrorFormatter implements ErrorFormatter
     private string $linkFormat;
 
     public function __construct(
-        private RelativePathHelper $relativePathHelper,
-        private CiDetectedErrorFormatter $ciDetectedErrorFormatter,
-        private ?string $editorUrl,
+        private readonly RelativePathHelper $relativePathHelper,
+        private readonly CiDetectedErrorFormatter $ciDetectedErrorFormatter,
+        private readonly ?string $editorUrl,
     ) {
         $this->linkFormat = self::getLinkFormatFromEnv();
     }
