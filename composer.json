@@ -4,7 +4,7 @@
     "keywords": ["phpstan", "dev"],
     "type": "phpstan-extension",
     "require": {
-        "php": "^8.1",
+        "php": "^7.4|^8.0",
         "phpstan/phpstan": "^1.12.4"
     },
     "license": "MIT",
@@ -26,9 +26,12 @@
         }
     },
     "config": {
-        "sort-packages": true
+        "sort-packages": true,
+        "platform": {
+            "php": "7.4"
+        }
     },
     "require-dev": {
-        "phpunit/phpunit": "^10.5.35"
+        "phpunit/phpunit": "^9.6"
     }
 }

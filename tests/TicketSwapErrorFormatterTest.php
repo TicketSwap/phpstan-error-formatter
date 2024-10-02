@@ -8,11 +8,11 @@ use PHPStan\Command\AnalysisResult;
 use PHPStan\Command\ErrorFormatter\ErrorFormatter;
 use PHPStan\Command\Output;
 use PHPStan\File\NullRelativePathHelper;
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
-#[CoversClass(TicketSwapErrorFormatter::class)]
+/**
+ * @covers TicketSwapErrorFormatter
+ */
 final class TicketSwapErrorFormatterTest extends TestCase
 {
     private const PHPSTOR_EDITOR_URL = 'phpstorm://open?file=%file%&line=%line%';
@@ -106,9 +106,9 @@ final class TicketSwapErrorFormatterTest extends TestCase
     }
 
     /**
+     * @dataProvider provideLinkFormats
      * @param TicketSwapErrorFormatter::LINK_FORMAT_* $format
      */
-    #[DataProvider('provideLinkFormats')]
     public function testLink(
         string $expected,
         string $format,
@@ -159,7 +159,9 @@ final class TicketSwapErrorFormatterTest extends TestCase
         ];
     }
 
-    #[DataProvider('provideHighlight')]
+    /**
+     * @dataProvider provideHighlight
+     */
     public function testHighlight(string $expected, string $message, ?string $tip, ?string $identifier, bool $isDecorated) : void
     {
         self::assertSame(
