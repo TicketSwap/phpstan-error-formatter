@@ -1,6 +1,7 @@
 services:
     errorFormatter.ticketswap:
-        class: TicketSwap\PHPstanErrorFormatter\TicketSwapErrorFormatter
+        class: TicketSwap\PHPStanErrorFormatter\TicketSwapErrorFormatter
         arguments:
             relativePathHelper: '@simpleRelativePathHelper'
+            ciDetectedErrorFormatter: '@PHPStan\Command\ErrorFormatter\CiDetectedErrorFormatter'
             editorUrl: '%editorUrl%'
