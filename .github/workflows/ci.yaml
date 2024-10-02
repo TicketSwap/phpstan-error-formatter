@@ -14,7 +14,13 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                php: [ '8.1', '8.2', '8.3', '8.4' ]
+                php:
+                    - '7.4'
+                    - '8.0'
+                    - '8.1'
+                    - '8.2'
+                    - '8.3'
+                    - '8.4'
                 dependency-versions: [ lowest, highest ]
         steps:
             -   name: Checkout
@@ -36,7 +42,12 @@ jobs:
 
     phpstan:
         runs-on: ubuntu-latest
-
+        strategy:
+            fail-fast: false
+            matrix:
+                php:
+                    - '7.4'
+                    - '8.3'
         steps:
             -   name: Checkout code
                 uses: actions/checkout@v4
@@ -44,12 +55,10 @@ jobs:
             -   name: Set up PHP
                 uses: shivammathur/setup-php@v2
                 with:
-                    php-version: '8.1'
+                    php-version: '${{ matrix.php }}'
 
             -   name: Install Composer packages
                 uses: ramsey/composer-install@v3
-                with:
-                    dependency-versions: '${{ matrix.dependency-versions }}'
 
             -   name: Run PHPStan
                 run: vendor/bin/phpstan --ansi

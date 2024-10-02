@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace TicketSwap\PHPStanErrorFormatter;
 
 use PHPStan\Command\AnalysisResult;
-use PHPStan\Command\ErrorFormatter\CiDetectedErrorFormatter;
 use PHPStan\Command\ErrorFormatter\ErrorFormatter;
 use PHPStan\Command\Output;
 use PHPStan\File\RelativePathHelper;
@@ -24,11 +23,18 @@ final class TicketSwapErrorFormatter implements ErrorFormatter
      */
     private string $linkFormat;
 
+    private RelativePathHelper $relativePathHelper;
+    private ErrorFormatter $ciDetectedErrorFormatter;
+    private ?string $editorUrl;
+
     public function __construct(
-        private readonly RelativePathHelper $relativePathHelper,
-        private readonly ErrorFormatter $ciDetectedErrorFormatter,
-        private readonly ?string $editorUrl = null,
+        RelativePathHelper $relativePathHelper,
+        ErrorFormatter $ciDetectedErrorFormatter,
+        ?string $editorUrl = null
     ) {
+        $this->relativePathHelper = $relativePathHelper;
+        $this->ciDetectedErrorFormatter = $ciDetectedErrorFormatter;
+        $this->editorUrl = $editorUrl;
         $this->linkFormat = self::getLinkFormatFromEnv();
     }
 
@@ -37,12 +43,19 @@ final class TicketSwapErrorFormatter implements ErrorFormatter
      */
     public static function getLinkFormatFromEnv() : string
     {
-        return match (true) {
-            getenv('GITHUB_ACTIONS') !== false => self::LINK_FORMAT_GITHUB_ACTIONS,
-            getenv('TERMINAL_EMULATOR') === 'JetBrains-JediTerm' => self::LINK_FORMAT_PHPSTORM,
-            getenv('TERM_PROGRAM') === 'WarpTerminal' => self::LINK_FORMAT_WARP,
-            default => self::LINK_FORMAT_DEFAULT,
-        };
+        if (getenv('GITHUB_ACTIONS') !== false) {
+            return self::LINK_FORMAT_GITHUB_ACTIONS;
+        }
+
+        if (getenv('TERMINAL_EMULATOR') !== 'JetBrains-JediTerm') {
+            return self::LINK_FORMAT_PHPSTORM;
+        }
+
+        if (getenv('TERM_PROGRAM') !== 'WarpTerminal') {
+            return self::LINK_FORMAT_WARP;
+        }
+
+        return self::LINK_FORMAT_DEFAULT;
     }
 
     public function formatErrors(AnalysisResult $analysisResult, Output $output) : int
@@ -135,7 +148,7 @@ final class TicketSwapErrorFormatter implements ErrorFormatter
         string $absolutePath,
         string $relativePath,
         ?string $editorUrl,
-        bool $isDecorated,
+        bool $isDecorated
     ) : string {
         if (!$isDecorated || $editorUrl === null) {
             $format = self::LINK_FORMAT_WITHOUT_EDITOR;
@@ -180,7 +193,7 @@ final class TicketSwapErrorFormatter implements ErrorFormatter
             return $message;
         }
 
-        if (str_starts_with($message, 'Ignored error pattern')) {
+        if (strpos($message, 'Ignored error pattern') === 0) {
             return $message;
         }
 

@@ -1,25 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.5/phpunit.xsd"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.6/phpunit.xsd"
          bootstrap="tests/bootstrap.php"
-         cacheDirectory=".phpunit.cache"
+         cacheResultFile=".phpunit.cache/test-results"
          executionOrder="depends,defects"
-         requireCoverageMetadata="true"
-         beStrictAboutCoverageMetadata="true"
+         forceCoversAnnotation="true"
+         beStrictAboutCoversAnnotation="true"
          beStrictAboutOutputDuringTests="true"
-         displayDetailsOnPhpunitDeprecations="true"
-         failOnPhpunitDeprecation="true"
+         beStrictAboutTodoAnnotatedTests="true"
+         convertDeprecationsToExceptions="true"
          failOnRisky="true"
-         failOnWarning="true">
+         failOnWarning="true"
+         verbose="true">
     <testsuites>
         <testsuite name="default">
             <directory>tests</directory>
         </testsuite>
     </testsuites>
 
-    <source restrictDeprecations="true" restrictNotices="true" restrictWarnings="true">
+    <coverage cacheDirectory=".phpunit.cache/code-coverage"
+              processUncoveredFiles="true">
         <include>
-            <directory>src</directory>
+            <directory suffix=".php">src</directory>
         </include>
-    </source>
+    </coverage>
 </phpunit>
