@@ -27,31 +27,39 @@ final class TicketSwapErrorFormatter implements ErrorFormatter
     private ErrorFormatter $ciDetectedErrorFormatter;
     private ?string $editorUrl;
 
+    /**
+     * @param RelativePathHelper $relativePathHelper
+     * @param ErrorFormatter $ciDetectedErrorFormatter
+     * @param string|null $editorUrl
+     * @param array<string, mixed> $environmentVariables
+     */
     public function __construct(
         RelativePathHelper $relativePathHelper,
         ErrorFormatter $ciDetectedErrorFormatter,
-        ?string $editorUrl = null
+        ?string $editorUrl,
+        array $environmentVariables
     ) {
         $this->relativePathHelper = $relativePathHelper;
         $this->ciDetectedErrorFormatter = $ciDetectedErrorFormatter;
         $this->editorUrl = $editorUrl;
-        $this->linkFormat = self::getLinkFormatFromEnv();
+        $this->linkFormat = self::getLinkFormatFromEnv($environmentVariables);
     }
 
     /**
+     * @param array<string, mixed> $environmentVariables
      * @return self::LINK_FORMAT_*
      */
-    public static function getLinkFormatFromEnv() : string
+    public static function getLinkFormatFromEnv(array $environmentVariables) : string
     {
-        if (getenv('GITHUB_ACTIONS') !== false) {
+        if (isset($environmentVariables['GITHUB_ACTIONS'])) {
             return self::LINK_FORMAT_GITHUB_ACTIONS;
         }
 
-        if (getenv('TERMINAL_EMULATOR') !== 'JetBrains-JediTerm') {
+        if (isset($environmentVariables['TERMINAL_EMULATOR']) && $environmentVariables['TERMINAL_EMULATOR'] === 'JetBrains-JediTerm') {
             return self::LINK_FORMAT_PHPSTORM;
         }
 
-        if (getenv('TERM_PROGRAM') !== 'WarpTerminal') {
+        if (isset($environmentVariables['TERM_PROGRAM']) && $environmentVariables['TERM_PROGRAM'] === 'WarpTerminal') {
             return self::LINK_FORMAT_WARP;
         }
 
