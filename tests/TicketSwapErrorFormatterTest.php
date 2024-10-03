@@ -31,7 +31,46 @@ final class TicketSwapErrorFormatterTest extends TestCase
                     return 0;
                 }
             },
-            self::PHPSTOR_EDITOR_URL
+            self::PHPSTOR_EDITOR_URL,
+            []
+        );
+    }
+
+    /**
+     * @return iterable<array{TicketSwapErrorFormatter::LINK_FORMAT_*, array<string, string>}>
+     */
+    public static function provideLinkFormatFromEnv() : iterable
+    {
+        yield 'GitHub Actions' => [
+            TicketSwapErrorFormatter::LINK_FORMAT_GITHUB_ACTIONS,
+            ['GITHUB_ACTIONS' => 'true'],
+        ];
+        yield 'JetBrains' => [
+            TicketSwapErrorFormatter::LINK_FORMAT_PHPSTORM,
+            ['TERMINAL_EMULATOR' => 'JetBrains-JediTerm'],
+        ];
+        yield 'Warp' => [
+            TicketSwapErrorFormatter::LINK_FORMAT_WARP,
+            ['TERM_PROGRAM' => 'WarpTerminal'],
+        ];
+        yield 'Ghostty' => [
+            TicketSwapErrorFormatter::LINK_FORMAT_DEFAULT,
+            ['TERM_PROGRAM' => 'ghostty'],
+        ];
+        yield 'Default' => [
+            TicketSwapErrorFormatter::LINK_FORMAT_DEFAULT,
+            [],
+        ];
+    }
+
+    /**
+     * @dataProvider provideLinkFormatFromEnv
+     */
+    public function testGetLinkFormatFromEnv(string $expected, array $environmentVariables) : void
+    {
+        self::assertSame(
+            $expected,
+            TicketSwapErrorFormatter::getLinkFormatFromEnv($environmentVariables)
         );
     }
 

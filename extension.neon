@@ -5,3 +5,4 @@ services:
             relativePathHelper: '@simpleRelativePathHelper'
             ciDetectedErrorFormatter: '@PHPStan\Command\ErrorFormatter\CiDetectedErrorFormatter'
             editorUrl: '%editorUrl%'
+            environmentVariables: '%env%'
