@@ -5,7 +5,7 @@
     "type": "phpstan-extension",
     "require": {
         "php": "^7.4|^8.0",
-        "phpstan/phpstan": "^1.12.4"
+        "phpstan/phpstan": "^1.12.4|^2.0"
     },
     "license": "MIT",
     "autoload": {
