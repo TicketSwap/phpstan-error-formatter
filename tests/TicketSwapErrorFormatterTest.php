@@ -183,6 +183,13 @@ final class TicketSwapErrorFormatterTest extends TestCase
             true
         ];
         yield [
+            "Parameter #1 <fg=green>\$currentWorkingDirectory</>.",
+            'Parameter #1 $currentWorkingDirectory.',
+            null,
+            null,
+            true
+        ];
+        yield [
             'Parameter #1 $currentWorkingDirectory of method Application\AnalyzeCommand: getFinder() expects string, string|false given.',
             'Parameter #1 $currentWorkingDirectory of method Application\AnalyzeCommand: getFinder() expects string, string|false given.',
             null,
