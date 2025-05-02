@@ -224,7 +224,7 @@ final class TicketSwapErrorFormatter implements ErrorFormatter
 
         // Variable
         $message = (string) preg_replace(
-            "/(?<=[:]{2}|[\s\"\(])([.]{3})?(\\$[A-Za-z0-9_\\-]+)(?=[\s|\"|\)]|$)/",
+            "/(?<=[:]{2}|[\s\"\(])([.]{3})?(\\$[A-Za-z0-9_\\-]+)(?=[\.|\s|\"|\)]|$)/",
             '<fg=green>$1$2</>',
             $message,
         );
