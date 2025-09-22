@@ -203,6 +203,13 @@ final class TicketSwapErrorFormatterTest extends TestCase
             'argument.type',
             true
         ];
+        yield [
+            'Parameter #1 <fg=green>$currentWorkingDirectory</> of method <fg=yellow>Application\AnalyzeCommand</>: <fg=blue>getFinder()</> expects <fg=magenta>string</>, <fg=magenta>Stringable</>|<fg=magenta>false</> given.',
+            'Parameter #1 $currentWorkingDirectory of method Application\AnalyzeCommand: getFinder() expects string, Stringable|false given.',
+            null,
+            null,
+            true
+        ];
     }
 
     /**
