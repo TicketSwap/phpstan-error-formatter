@@ -245,7 +245,7 @@ final class TicketSwapErrorFormatter implements ErrorFormatter
 
         // Types
         $message = (string) preg_replace(
-            '/(?<=[\s\|\(><])(null|true|false|int|float|bool|([-\w]+-)?string|array|object|mixed|resource|iterable|void|callable)(?=[:]{2}|[\.\s\|><,\(\)\{\}]+)/',
+            '/(?<=[\s\|\(><])(null|true|false|int|float|bool|([-\w]+-)?string|Stringable|array|object|mixed|resource|iterable|void|callable)(?=[:]{2}|[\.\s\|><,\(\)\{\}]+)/',
             '<fg=magenta>$1</>',
             $message,
         );
