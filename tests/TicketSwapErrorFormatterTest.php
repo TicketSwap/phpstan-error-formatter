@@ -210,6 +210,13 @@ final class TicketSwapErrorFormatterTest extends TestCase
             null,
             true
         ];
+        yield [
+            "Array has 3 duplicate keys with value '<fg=yellow>App\Activity</>' (<fg=yellow>\App\Activity</>::class).",
+            "Array has 3 duplicate keys with value 'App\Activity' (\App\Activity::class).",
+            null,
+            null,
+            true
+        ];
     }
 
     /**
