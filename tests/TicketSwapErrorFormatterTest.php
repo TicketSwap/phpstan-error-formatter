@@ -218,7 +218,7 @@ final class TicketSwapErrorFormatterTest extends TestCase
             true
         ];
         yield [
-            'Property <fg=yellow>App\Models\ExampleModel::$example_property</> (<fg=magenta>stdClass</>|<fg=magenta>null</>) does not accept <fg=magenta>mixed</>.',
+            'Property <fg=yellow>App\Models\ExampleModel</>::<fg=green>$example_property</> (<fg=magenta>stdClass</>|<fg=magenta>null</>) does not accept <fg=magenta>mixed</>.',
             'Property App\Models\ExampleModel::$example_property (stdClass|null) does not accept mixed.',
             null,
             null,
