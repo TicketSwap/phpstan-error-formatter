@@ -225,7 +225,7 @@ final class TicketSwapErrorFormatterTest extends TestCase
             true,
         ];
          yield [
-            'Parameter #1 <fg=green>$callback</> of method <fg=yellow>Illuminate\Support\Collection</><<fg=magenta>int</>,<fg=magenta>mixed</>>: <fg=blue>map()</> expects',
+            'Parameter #1 <fg=green>$callback</> of method <fg=yellow>Illuminate\Support\Collection</><<fg=magenta>int</>,<fg=magenta>mixed</>>::<fg=blue>map()</> expects',
             'Parameter #1 $callback of method Illuminate\Support\Collection<int,mixed>::map() expects',
             null,
             null,
