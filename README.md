@@ -53,6 +53,11 @@ parameters:
 ```
 
 When you haven't done so, make sure to configure the [editorUrl](https://phpstan.org/user-guide/output-format#opening-file-in-an-editor):
+
 ```neon
 parameters:
+    # on PhpStorm
     editorUrl: 'phpstorm://open?file=%%file%%&line=%%line%%'
+
+    # On Visual Studio Code, change to:
+    # editorUrl: 'vscode://file/%%file%%:%%line%%'
