@@ -197,6 +197,13 @@ final class TicketSwapErrorFormatterTest extends TestCase
             false
         ];
         yield [
+            "Parameter #1 \$currentWorkingDirectory of method Application\AnalyzeCommand: getFinder() expects string, string|false given.\nTip: you can do blabla.\nIdentifier: argument.type",
+            'Parameter #1 $currentWorkingDirectory of method Application\AnalyzeCommand: getFinder() expects string, string|false given.',
+            'you can do blabla.',
+            'argument.type',
+            false
+        ];
+        yield [
             "Parameter #1 <fg=green>\$currentWorkingDirectory</> of method <fg=yellow>Application\AnalyzeCommand</>: <fg=blue>getFinder()</> expects <fg=magenta>string</>, <fg=magenta>string</>|<fg=magenta>false</> given.\n💡 <fg=blue>Tip: you can do blabla.</>\n🔖 <fg=blue>argument.type</>",
             'Parameter #1 $currentWorkingDirectory of method Application\AnalyzeCommand: getFinder() expects string, string|false given.',
             'Tip: you can do blabla.',

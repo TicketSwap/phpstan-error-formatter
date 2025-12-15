@@ -198,6 +198,16 @@ final class TicketSwapErrorFormatter implements ErrorFormatter
     public static function highlight(string $message, ?string $tip, ?string $identifier, bool $isDecorated) : string
     {
         if (!$isDecorated) {
+            if ($tip !== null) {
+                foreach (explode("\n", $tip) as $line) {
+                    $message .= "\nTip: " . ltrim($line, ' •');
+                }
+            }
+
+            if ($identifier !== null) {
+                $message .= "\nIdentifier: " . $identifier;
+            }
+
             return $message;
         }
 
