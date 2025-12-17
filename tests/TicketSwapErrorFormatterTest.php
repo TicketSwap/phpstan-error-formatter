@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace TicketSwap\PHPStanErrorFormatter;
 
+use PHPStan\Analyser\Error;
 use PHPStan\Command\AnalysisResult;
 use PHPStan\Command\ErrorFormatter\ErrorFormatter;
 use PHPStan\Command\Output;
 use PHPStan\File\NullRelativePathHelper;
+use PHPUnit\Framework\MockObject\Stub;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -15,7 +17,7 @@ use PHPUnit\Framework\TestCase;
  */
 final class TicketSwapErrorFormatterTest extends TestCase
 {
-    private const PHPSTOR_EDITOR_URL = 'phpstorm://open?file=%file%&line=%line%';
+    private const PHPSTORM_EDITOR_URL = 'phpstorm://open?file=%file%&line=%line%';
 
     private TicketSwapErrorFormatter $formatter;
 
@@ -31,7 +33,7 @@ final class TicketSwapErrorFormatterTest extends TestCase
                     return 0;
                 }
             },
-            self::PHPSTOR_EDITOR_URL,
+            self::PHPSTORM_EDITOR_URL,
             []
         );
     }
@@ -85,7 +87,7 @@ final class TicketSwapErrorFormatterTest extends TestCase
             20,
             '/www/project/src/Core/Admin/Controller/Dashboard/User/AddUserController.php',
             'src/Core/Admin/Controller/Dashboard/User/AddUserController.php',
-            self::PHPSTOR_EDITOR_URL,
+            self::PHPSTORM_EDITOR_URL,
             true,
         ];
         yield [
@@ -94,7 +96,7 @@ final class TicketSwapErrorFormatterTest extends TestCase
             20,
             '/www/project/src/Core/Admin/Controller/Dashboard/User/AddUserController.php',
             'src/Core/Admin/Controller/Dashboard/User/AddUserController.php',
-            self::PHPSTOR_EDITOR_URL,
+            self::PHPSTORM_EDITOR_URL,
             true,
         ];
         yield [
@@ -103,7 +105,7 @@ final class TicketSwapErrorFormatterTest extends TestCase
             20,
             '/www/project/src/Core/Admin/Controller/Dashboard/User/AddUserController.php',
             'src/Core/Admin/Controller/Dashboard/User/AddUserController.php',
-            self::PHPSTOR_EDITOR_URL,
+            self::PHPSTORM_EDITOR_URL,
             true,
         ];
         yield [
@@ -112,7 +114,7 @@ final class TicketSwapErrorFormatterTest extends TestCase
             20,
             '/www/project/src/Core/Admin/Controller/Dashboard/User/AddUserController.php',
             'src/Core/Admin/Controller/Dashboard/User/AddUserController.php',
-            self::PHPSTOR_EDITOR_URL,
+            self::PHPSTORM_EDITOR_URL,
             true,
         ];
         yield [
@@ -121,7 +123,7 @@ final class TicketSwapErrorFormatterTest extends TestCase
             20,
             '/www/project/src/Core/Admin/Controller/Dashboard/User/AddUserController.php',
             'src/Core/Admin/Controller/Dashboard/User/AddUserController.php',
-            self::PHPSTOR_EDITOR_URL,
+            self::PHPSTORM_EDITOR_URL,
             true,
         ];
         yield [
@@ -130,7 +132,7 @@ final class TicketSwapErrorFormatterTest extends TestCase
             20,
             '/www/project/src/Core/Admin/Controller/Dashboard/User/AddUserController.php',
             'src/Core/Admin/Controller/Dashboard/User/AddUserController.php',
-            self::PHPSTOR_EDITOR_URL,
+            self::PHPSTORM_EDITOR_URL,
             false,
         ];
         yield [
@@ -254,5 +256,96 @@ final class TicketSwapErrorFormatterTest extends TestCase
                 $isDecorated
             )
         );
+    }
+
+    public function testFormatErrorsNoErrorsWritesNoErrorsAndReturnsZero() : void
+    {
+        $analysisResult = new AnalysisResult(
+            [],
+            [],
+            [],
+            [],
+            [],
+            false,
+            null,
+            false,
+            0,
+            false,
+            [],
+        );
+
+        $writes = [];
+        $output = $this->createMock(Output::class);
+        $output->method('isDecorated')->willReturn(true);
+        $output->method('isVerbose')->willReturn(false);
+        $output->method('isVeryVerbose')->willReturn(false);
+        $output->method('isDebug')->willReturn(false);
+        $output->method('getStyle')->willReturnCallback(function () { return Stub::returnValueMap([]); });
+        $output->method('writeLineFormatted')->willReturnCallback(function (string $line) use (&$writes) : void { $writes[] = $line; });
+        $output->method('writeRaw')->willReturnCallback(function (string $line) use (&$writes) : void { $writes[] = $line; });
+
+        $result = $this->formatter->formatErrors($analysisResult, $output);
+
+        self::assertSame(0, $result);
+        self::assertSame(['<fg=green;options=bold>No errors</>', ''], $writes);
+    }
+
+    public function testFormatErrorsWithErrorsPrintsMessagesLinksSummaryAndReturnsOne() : void
+    {
+        $fileError = new Error(
+            'Parameter #1 $var expects string, int given.',
+            '/www/project/src/Foo/Bar.php',
+            12,
+            null,
+            '/www/project/src/Foo/Bar.php',
+            null,
+            'Adjust in %configurationFile%',
+            null,
+            null,
+            'argument.type',
+            [],
+        );
+
+        $analysisResult = new AnalysisResult(
+            [$fileError],
+            [],
+            [],
+            [],
+            [],
+            false,
+            '/www/project/phpstan.neon',
+            false,
+            0,
+            false,
+            [],
+        );
+
+        $writes = [];
+        $output = $this->createMock(Output::class);
+        $output->method('isDecorated')->willReturn(true);
+        $output->method('isVerbose')->willReturn(false);
+        $output->method('isVeryVerbose')->willReturn(false);
+        $output->method('isDebug')->willReturn(false);
+        $output->method('getStyle')->willReturnCallback(function () { return Stub::returnValueMap([]); });
+        $output->method('writeLineFormatted')->willReturnCallback(function (string $line) use (&$writes) : void { $writes[] = $line; });
+        $output->method('writeRaw')->willReturnCallback(function (string $line) use (&$writes) : void { $writes[] = $line; });
+
+        $result = $this->formatter->formatErrors($analysisResult, $output);
+
+        self::assertSame(1, $result);
+
+        $expectedLink = "↳ <href=phpstorm://open?file=/www/project/src/Foo/Bar.php&line=12>/www/project/.../Foo/Bar.php:12</>\n";
+        $expectedSummary = '<bg=red;options=bold>Found 1 error</>';
+
+        $linkFound = false;
+        foreach ($writes as $w) {
+            if (strpos($w, $expectedLink) !== false) {
+                $linkFound = true;
+                break;
+            }
+        }
+        self::assertTrue($linkFound, 'Expected link not found. Output writes: ' . implode("\n---\n", $writes));
+        self::assertContains($expectedSummary, $writes);
+        self::assertContains('', $writes);
     }
 }
