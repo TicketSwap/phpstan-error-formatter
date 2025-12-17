@@ -259,24 +259,12 @@ final class TicketSwapErrorFormatterTest extends TestCase
         );
     }
 
-    public function testFormatErrorsNoErrorsWritesNoErrorsAndReturnsZero() : void
+    /**
+     * @param array{writes: array<string>} $writesWrapper
+     */
+    private function createOutput(array $writesWrapper) : Output
     {
-        $analysisResult = new AnalysisResult(
-            [],
-            [],
-            [],
-            [],
-            [],
-            false,
-            null,
-            false,
-            0,
-            false,
-            [],
-        );
-
-        $writesWrapper = ['writes' => []];
-        $output = new class($writesWrapper) implements Output {
+        return new class($writesWrapper) implements Output {
             private array $writesWrapper;
 
             public function __construct(array $writesWrapper)
@@ -381,6 +369,26 @@ final class TicketSwapErrorFormatterTest extends TestCase
                 return $this->writesWrapper['writes'];
             }
         };
+    }
+
+    public function testFormatErrorsNoErrorsWritesNoErrorsAndReturnsZero() : void
+    {
+        $analysisResult = new AnalysisResult(
+            [],
+            [],
+            [],
+            [],
+            [],
+            false,
+            null,
+            false,
+            0,
+            false,
+            [],
+        );
+
+        $writesWrapper = ['writes' => []];
+        $output = $this->createOutput($writesWrapper);
 
         $result = $this->formatter->formatErrors($analysisResult, $output);
 
@@ -419,111 +427,7 @@ final class TicketSwapErrorFormatterTest extends TestCase
         );
 
         $writesWrapper = ['writes' => []];
-        $output = new class($writesWrapper) implements Output {
-            private array $writesWrapper;
-
-            public function __construct(array $writesWrapper)
-            {
-                $this->writesWrapper = $writesWrapper;
-            }
-
-            public function writeFormatted(string $message) : void
-            {
-            }
-
-            public function writeLineFormatted(string $message) : void
-            {
-                $this->writesWrapper['writes'][] = $message;
-            }
-
-            public function writeRaw(string $message) : void
-            {
-                $this->writesWrapper['writes'][] = $message;
-            }
-
-            public function getStyle() : OutputStyle
-            {
-                return new class() implements OutputStyle {
-                    public function title(string $message) : void
-                    {
-                    }
-
-                    public function section(string $message) : void
-                    {
-                    }
-
-                    public function listing(array $elements) : void
-                    {
-                    }
-
-                    public function success(string $message) : void
-                    {
-                    }
-
-                    public function error(string $message) : void
-                    {
-                    }
-
-                    public function warning(string $message) : void
-                    {
-                    }
-
-                    public function note(string $message) : void
-                    {
-                    }
-
-                    public function caution(string $message) : void
-                    {
-                    }
-
-                    public function table(array $headers, array $rows) : void
-                    {
-                    }
-
-                    public function createProgressBar(int $max = 0) : ProgressBar
-                    {
-                        return new class() implements ProgressBar {
-                            public function start(int $max = 0) : void
-                            {
-                            }
-
-                            public function advance(int $step = 1) : void
-                            {
-                            }
-
-                            public function finish() : void
-                            {
-                            }
-                        };
-                    }
-                };
-            }
-
-            public function isVerbose() : bool
-            {
-                return false;
-            }
-
-            public function isVeryVerbose() : bool
-            {
-                return false;
-            }
-
-            public function isDebug() : bool
-            {
-                return false;
-            }
-
-            public function isDecorated() : bool
-            {
-                return true;
-            }
-
-            public function getWrites() : array
-            {
-                return $this->writesWrapper['writes'];
-            }
-        };
+        $output = $this->createOutput($writesWrapper);
 
         $result = $this->formatter->formatErrors($analysisResult, $output);
 
