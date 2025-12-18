@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace TicketSwap\PHPStanErrorFormatter;
 
+use PHPStan\Analyser\Error;
 use PHPStan\Command\AnalysisResult;
+use PHPStan\Command\ProgressBar;
 use PHPStan\Command\ErrorFormatter\ErrorFormatter;
 use PHPStan\Command\Output;
+use PHPStan\Command\OutputStyle;
 use PHPStan\File\NullRelativePathHelper;
 use PHPUnit\Framework\TestCase;
 
@@ -15,7 +18,7 @@ use PHPUnit\Framework\TestCase;
  */
 final class TicketSwapErrorFormatterTest extends TestCase
 {
-    private const PHPSTOR_EDITOR_URL = 'phpstorm://open?file=%file%&line=%line%';
+    private const PHPSTORM_EDITOR_URL = 'phpstorm://open?file=%file%&line=%line%';
 
     private TicketSwapErrorFormatter $formatter;
 
@@ -31,7 +34,7 @@ final class TicketSwapErrorFormatterTest extends TestCase
                     return 0;
                 }
             },
-            self::PHPSTOR_EDITOR_URL,
+            self::PHPSTORM_EDITOR_URL,
             []
         );
     }
@@ -85,7 +88,7 @@ final class TicketSwapErrorFormatterTest extends TestCase
             20,
             '/www/project/src/Core/Admin/Controller/Dashboard/User/AddUserController.php',
             'src/Core/Admin/Controller/Dashboard/User/AddUserController.php',
-            self::PHPSTOR_EDITOR_URL,
+            self::PHPSTORM_EDITOR_URL,
             true,
         ];
         yield [
@@ -94,7 +97,7 @@ final class TicketSwapErrorFormatterTest extends TestCase
             20,
             '/www/project/src/Core/Admin/Controller/Dashboard/User/AddUserController.php',
             'src/Core/Admin/Controller/Dashboard/User/AddUserController.php',
-            self::PHPSTOR_EDITOR_URL,
+            self::PHPSTORM_EDITOR_URL,
             true,
         ];
         yield [
@@ -103,7 +106,7 @@ final class TicketSwapErrorFormatterTest extends TestCase
             20,
             '/www/project/src/Core/Admin/Controller/Dashboard/User/AddUserController.php',
             'src/Core/Admin/Controller/Dashboard/User/AddUserController.php',
-            self::PHPSTOR_EDITOR_URL,
+            self::PHPSTORM_EDITOR_URL,
             true,
         ];
         yield [
@@ -112,7 +115,7 @@ final class TicketSwapErrorFormatterTest extends TestCase
             20,
             '/www/project/src/Core/Admin/Controller/Dashboard/User/AddUserController.php',
             'src/Core/Admin/Controller/Dashboard/User/AddUserController.php',
-            self::PHPSTOR_EDITOR_URL,
+            self::PHPSTORM_EDITOR_URL,
             true,
         ];
         yield [
@@ -121,7 +124,7 @@ final class TicketSwapErrorFormatterTest extends TestCase
             20,
             '/www/project/src/Core/Admin/Controller/Dashboard/User/AddUserController.php',
             'src/Core/Admin/Controller/Dashboard/User/AddUserController.php',
-            self::PHPSTOR_EDITOR_URL,
+            self::PHPSTORM_EDITOR_URL,
             true,
         ];
         yield [
@@ -130,7 +133,7 @@ final class TicketSwapErrorFormatterTest extends TestCase
             20,
             '/www/project/src/Core/Admin/Controller/Dashboard/User/AddUserController.php',
             'src/Core/Admin/Controller/Dashboard/User/AddUserController.php',
-            self::PHPSTOR_EDITOR_URL,
+            self::PHPSTORM_EDITOR_URL,
             false,
         ];
         yield [
@@ -254,5 +257,195 @@ final class TicketSwapErrorFormatterTest extends TestCase
                 $isDecorated
             )
         );
+    }
+
+    /**
+     * @param array{writes: array<string>} $writesWrapper
+     */
+    private function createOutput(array $writesWrapper) : Output
+    {
+        return new class($writesWrapper) implements Output {
+            private array $writesWrapper;
+
+            public function __construct(array $writesWrapper)
+            {
+                $this->writesWrapper = $writesWrapper;
+            }
+
+            public function writeFormatted(string $message) : void
+            {
+            }
+
+            public function writeLineFormatted(string $message) : void
+            {
+                $this->writesWrapper['writes'][] = $message;
+            }
+
+            public function writeRaw(string $message) : void
+            {
+                $this->writesWrapper['writes'][] = $message;
+            }
+
+            public function getStyle() : OutputStyle
+            {
+                return new class() implements OutputStyle {
+                    public function title(string $message) : void
+                    {
+                    }
+
+                    public function section(string $message) : void
+                    {
+                    }
+
+                    public function listing(array $elements) : void
+                    {
+                    }
+
+                    public function success(string $message) : void
+                    {
+                    }
+
+                    public function error(string $message) : void
+                    {
+                    }
+
+                    public function warning(string $message) : void
+                    {
+                    }
+
+                    public function note(string $message) : void
+                    {
+                    }
+
+                    public function caution(string $message) : void
+                    {
+                    }
+
+                    public function table(array $headers, array $rows) : void
+                    {
+                    }
+
+                    public function createProgressBar(int $max = 0) : ProgressBar
+                    {
+                        return new class() implements ProgressBar {
+                            public function start(int $max = 0) : void
+                            {
+                            }
+
+                            public function advance(int $step = 1) : void
+                            {
+                            }
+
+                            public function finish() : void
+                            {
+                            }
+                        };
+                    }
+                };
+            }
+
+            public function isVerbose() : bool
+            {
+                return false;
+            }
+
+            public function isVeryVerbose() : bool
+            {
+                return false;
+            }
+
+            public function isDebug() : bool
+            {
+                return false;
+            }
+
+            public function isDecorated() : bool
+            {
+                return true;
+            }
+
+            public function getWrites() : array
+            {
+                return $this->writesWrapper['writes'];
+            }
+        };
+    }
+
+    public function testFormatErrorsNoErrorsWritesNoErrorsAndReturnsZero() : void
+    {
+        $analysisResult = new AnalysisResult(
+            [],
+            [],
+            [],
+            [],
+            [],
+            false,
+            null,
+            false,
+            0,
+            false,
+            [],
+        );
+
+        $writesWrapper = ['writes' => []];
+        $output = $this->createOutput($writesWrapper);
+
+        $result = $this->formatter->formatErrors($analysisResult, $output);
+
+        self::assertSame(0, $result);
+        self::assertSame(['<fg=green;options=bold>No errors</>', ''], $output->getWrites());
+    }
+
+    public function testFormatErrorsWithErrorsPrintsMessagesLinksSummaryAndReturnsOne() : void
+    {
+        $fileError = new Error(
+            'Parameter #1 $var expects string, int given.',
+            '/www/project/src/Foo/Bar.php',
+            12,
+            null,
+            '/www/project/src/Foo/Bar.php',
+            null,
+            'Adjust in %configurationFile%',
+            null,
+            null,
+            'argument.type',
+            [],
+        );
+
+        $analysisResult = new AnalysisResult(
+            [$fileError],
+            [],
+            [],
+            [],
+            [],
+            false,
+            '/www/project/phpstan.neon',
+            false,
+            0,
+            false,
+            [],
+        );
+
+        $writesWrapper = ['writes' => []];
+        $output = $this->createOutput($writesWrapper);
+
+        $result = $this->formatter->formatErrors($analysisResult, $output);
+
+        self::assertSame(1, $result);
+
+        $expectedLink = "↳ <href=phpstorm://open?file=/www/project/src/Foo/Bar.php&line=12>/www/project/.../Foo/Bar.php:12</>\n";
+        $expectedSummary = '<bg=red;options=bold>Found 1 error</>';
+
+        $writes = $output->getWrites();
+        $linkFound = false;
+        foreach ($writes as $w) {
+            if (strpos($w, $expectedLink) !== false) {
+                $linkFound = true;
+                break;
+            }
+        }
+        self::assertTrue($linkFound, 'Expected link not found. Output writes: ' . implode("\n---\n", $writes));
+        self::assertContains($expectedSummary, $writes);
+        self::assertContains('', $writes);
     }
 }
