@@ -39,6 +39,11 @@ final class TicketSwapErrorFormatterTest extends TestCase
         );
     }
 
+    private static function isWindows() : bool
+    {
+        return strtoupper(substr(PHP_OS, 0, 3)) === 'WIN';
+    }
+
     /**
      * @return iterable<array{TicketSwapErrorFormatter::LINK_FORMAT_*, array<string, string>}>
      */
@@ -83,7 +88,9 @@ final class TicketSwapErrorFormatterTest extends TestCase
     public static function provideLinkFormats() : iterable
     {
         yield [
-            "↳ <href=phpstorm://open?file=/www/project/src/Core/Admin/Controller/Dashboard/User/AddUserController.php&line=20>src/Core/Admin/.../User/AddUserController.php:20</>\n",
+            self::isWindows()
+                ? "↳ <href=phpstorm://open?file=/www/project/src/Core/Admin/Controller/Dashboard/User/AddUserController.php&line=20>src/Core/Admin/Controller/Dashboard/User/AddUserController.php:20</>\n"
+                : "↳ <href=phpstorm://open?file=/www/project/src/Core/Admin/Controller/Dashboard/User/AddUserController.php&line=20>src/Core/Admin/.../User/AddUserController.php:20</>\n",
             TicketSwapErrorFormatter::LINK_FORMAT_DEFAULT,
             20,
             '/www/project/src/Core/Admin/Controller/Dashboard/User/AddUserController.php',
@@ -433,7 +440,9 @@ final class TicketSwapErrorFormatterTest extends TestCase
 
         self::assertSame(1, $result);
 
-        $expectedLink = "↳ <href=phpstorm://open?file=/www/project/src/Foo/Bar.php&line=12>/www/project/.../Foo/Bar.php:12</>\n";
+        $expectedLink = self::isWindows()
+            ? "↳ <href=phpstorm://open?file=/www/project/src/Foo/Bar.php&line=12>/www/project/src/Foo/Bar.php:12</>\n"
+            : "↳ <href=phpstorm://open?file=/www/project/src/Foo/Bar.php&line=12>/www/project/.../Foo/Bar.php:12</>\n";
         $expectedSummary = '<bg=red;options=bold>Found 1 error</>';
 
         $writes = $output->getWrites();
