@@ -178,7 +178,7 @@ final class TicketSwapErrorFormatter implements ErrorFormatter
         );
     }
 
-    private static function trimPath(string $path) : string
+    private static function trimPath(string $path, $other = '') : string
     {
         $parts = explode(DIRECTORY_SEPARATOR, $path);
         if (count($parts) < 6) {
