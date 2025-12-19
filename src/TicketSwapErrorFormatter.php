@@ -178,15 +178,17 @@ final class TicketSwapErrorFormatter implements ErrorFormatter
         );
     }
 
-    private static function trimPath(string $path, $other = '') : string
+    private static function trimPath(string $path) : string
     {
-        $parts = explode(DIRECTORY_SEPARATOR, $path);
+        // Normalize to forward slashes for consistent handling across platforms
+        $normalizedPath = str_replace('\\', '/', $path);
+        $parts = explode('/', $normalizedPath);
         if (count($parts) < 6) {
             return $path;
         }
 
         return implode(
-            DIRECTORY_SEPARATOR,
+            '/',
             [
                 ...array_slice($parts, 0, 3),
                 '...',
