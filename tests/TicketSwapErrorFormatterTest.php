@@ -87,10 +87,9 @@ final class TicketSwapErrorFormatterTest extends TestCase
      */
     public static function provideLinkFormats() : iterable
     {
-        yield [
-            self::isWindows()
-                ? "↳ <href=phpstorm://open?file=/www/project/src/Core/Admin/Controller/Dashboard/User/AddUserController.php&line=20>src/Core/Admin/Controller/Dashboard/User/AddUserController.php:20</>\n"
-                : "↳ <href=phpstorm://open?file=/www/project/src/Core/Admin/Controller/Dashboard/User/AddUserController.php&line=20>src/Core/Admin/.../User/AddUserController.php:20</>\n",
+        // Unix/Linux paths (forward slashes)
+        yield 'Unix - DEFAULT with editor and decoration' => [
+            "↳ <href=phpstorm://open?file=/www/project/src/Core/Admin/Controller/Dashboard/User/AddUserController.php&line=20>src/Core/Admin/Controller/Dashboard/User/AddUserController.php:20</>\n",
             TicketSwapErrorFormatter::LINK_FORMAT_DEFAULT,
             20,
             '/www/project/src/Core/Admin/Controller/Dashboard/User/AddUserController.php',
@@ -98,7 +97,7 @@ final class TicketSwapErrorFormatterTest extends TestCase
             self::PHPSTORM_EDITOR_URL,
             true,
         ];
-        yield [
+        yield 'Unix - GITHUB_ACTIONS' => [
             "↳ src/Core/Admin/Controller/Dashboard/User/AddUserController.php:20\n",
             TicketSwapErrorFormatter::LINK_FORMAT_GITHUB_ACTIONS,
             20,
@@ -107,7 +106,7 @@ final class TicketSwapErrorFormatterTest extends TestCase
             self::PHPSTORM_EDITOR_URL,
             true,
         ];
-        yield [
+        yield 'Unix - WARP' => [
             "↳ src/Core/Admin/Controller/Dashboard/User/AddUserController.php:20\n",
             TicketSwapErrorFormatter::LINK_FORMAT_WARP,
             20,
@@ -116,7 +115,7 @@ final class TicketSwapErrorFormatterTest extends TestCase
             self::PHPSTORM_EDITOR_URL,
             true,
         ];
-        yield [
+        yield 'Unix - PHPSTORM' => [
             "↳ file:///www/project/src/Core/Admin/Controller/Dashboard/User/AddUserController.php:20\n",
             TicketSwapErrorFormatter::LINK_FORMAT_PHPSTORM,
             20,
@@ -125,7 +124,7 @@ final class TicketSwapErrorFormatterTest extends TestCase
             self::PHPSTORM_EDITOR_URL,
             true,
         ];
-        yield [
+        yield 'Unix - WITHOUT_EDITOR' => [
             "↳ src/Core/Admin/Controller/Dashboard/User/AddUserController.php:20\n",
             TicketSwapErrorFormatter::LINK_FORMAT_WITHOUT_EDITOR,
             20,
@@ -134,7 +133,7 @@ final class TicketSwapErrorFormatterTest extends TestCase
             self::PHPSTORM_EDITOR_URL,
             true,
         ];
-        yield [
+        yield 'Unix - DEFAULT without decoration' => [
             "↳ src/Core/Admin/Controller/Dashboard/User/AddUserController.php:20\n",
             TicketSwapErrorFormatter::LINK_FORMAT_DEFAULT,
             20,
@@ -143,13 +142,42 @@ final class TicketSwapErrorFormatterTest extends TestCase
             self::PHPSTORM_EDITOR_URL,
             false,
         ];
-        yield [
+        yield 'Unix - DEFAULT without editor URL' => [
             "↳ src/Core/Admin/Controller/Dashboard/User/AddUserController.php:20\n",
             TicketSwapErrorFormatter::LINK_FORMAT_DEFAULT,
             20,
             '/www/project/src/Core/Admin/Controller/Dashboard/User/AddUserController.php',
             'src/Core/Admin/Controller/Dashboard/User/AddUserController.php',
             null,
+            true,
+        ];
+
+        // Windows paths (backslashes)
+        yield 'Windows - DEFAULT with editor and decoration' => [
+            "↳ <href=phpstorm://open?file=C:\\www\\project\\src\\Core\\Admin\\Controller\\Dashboard\\User\\AddUserController.php&line=20>src\\Core\\Admin\\...\\User\\AddUserController.php:20</>\n",
+            TicketSwapErrorFormatter::LINK_FORMAT_DEFAULT,
+            20,
+            'C:\\www\\project\\src\\Core\\Admin\\Controller\\Dashboard\\User\\AddUserController.php',
+            'src\\Core\\Admin\\Controller\\Dashboard\\User\\AddUserController.php',
+            self::PHPSTORM_EDITOR_URL,
+            true,
+        ];
+        yield 'Windows - GITHUB_ACTIONS' => [
+            "↳ src\\Core\\Admin\\Controller\\Dashboard\\User\\AddUserController.php:20\n",
+            TicketSwapErrorFormatter::LINK_FORMAT_GITHUB_ACTIONS,
+            20,
+            'C:\\www\\project\\src\\Core\\Admin\\Controller\\Dashboard\\User\\AddUserController.php',
+            'src\\Core\\Admin\\Controller\\Dashboard\\User\\AddUserController.php',
+            self::PHPSTORM_EDITOR_URL,
+            true,
+        ];
+        yield 'Windows - WITHOUT_EDITOR' => [
+            "↳ src\\Core\\Admin\\Controller\\Dashboard\\User\\AddUserController.php:20\n",
+            TicketSwapErrorFormatter::LINK_FORMAT_WITHOUT_EDITOR,
+            20,
+            'C:\\www\\project\\src\\Core\\Admin\\Controller\\Dashboard\\User\\AddUserController.php',
+            'src\\Core\\Admin\\Controller\\Dashboard\\User\\AddUserController.php',
+            self::PHPSTORM_EDITOR_URL,
             true,
         ];
     }
@@ -405,12 +433,20 @@ final class TicketSwapErrorFormatterTest extends TestCase
 
     public function testFormatErrorsWithErrorsPrintsMessagesLinksSummaryAndReturnsOne() : void
     {
+        // Use OS-appropriate paths to test directory separator handling
+        $absolutePath = self::isWindows()
+            ? 'C:\\www\\project\\src\\Foo\\Bar.php'
+            : '/www/project/src/Foo/Bar.php';
+        $configPath = self::isWindows()
+            ? 'C:\\www\\project\\phpstan.neon'
+            : '/www/project/phpstan.neon';
+
         $fileError = new Error(
             'Parameter #1 $var expects string, int given.',
-            '/www/project/src/Foo/Bar.php',
+            $absolutePath,
             12,
             null,
-            '/www/project/src/Foo/Bar.php',
+            $absolutePath,
             null,
             'Adjust in %configurationFile%',
             null,
@@ -426,7 +462,7 @@ final class TicketSwapErrorFormatterTest extends TestCase
             [],
             [],
             false,
-            '/www/project/phpstan.neon',
+            $configPath,
             false,
             0,
             false,
@@ -440,9 +476,13 @@ final class TicketSwapErrorFormatterTest extends TestCase
 
         self::assertSame(1, $result);
 
-        $expectedLink = self::isWindows()
-            ? "↳ <href=phpstorm://open?file=/www/project/src/Foo/Bar.php&line=12>/www/project/src/Foo/Bar.php:12</>\n"
-            : "↳ <href=phpstorm://open?file=/www/project/src/Foo/Bar.php&line=12>/www/project/.../Foo/Bar.php:12</>\n";
+        // NullRelativePathHelper returns the absolute path, which has 6+ parts and gets trimmed
+        // Windows: C:\www\project\src\Foo\Bar.php -> C:\www\project\...\Foo\Bar.php
+        // Unix: /www/project/src/Foo/Bar.php -> /www/project/.../Foo/Bar.php
+        $expectedShortPath = self::isWindows()
+            ? 'C:\\www\\project\\...\\Foo\\Bar.php'
+            : '/www/project/.../Foo/Bar.php';
+        $expectedLink = "↳ <href=phpstorm://open?file=$absolutePath&line=12>$expectedShortPath:12</>\n";
         $expectedSummary = '<bg=red;options=bold>Found 1 error</>';
 
         $writes = $output->getWrites();
