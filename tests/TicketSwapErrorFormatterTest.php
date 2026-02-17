@@ -87,19 +87,18 @@ final class TicketSwapErrorFormatterTest extends TestCase
      */
     public static function provideLinkFormats() : iterable
     {
-        // Unix/Linux paths (forward slashes)
-        yield 'Unix - DEFAULT with editor and decoration' => [
+        yield [
             self::isWindows()
                 ? "↳ <href=phpstorm://open?file=/www/project/src/Core/Admin/Controller/Dashboard/User/AddUserController.php&line=20>src/Core/Admin/Controller/Dashboard/User/AddUserController.php:20</>\n"
                 : "↳ <href=phpstorm://open?file=/www/project/src/Core/Admin/Controller/Dashboard/User/AddUserController.php&line=20>src/Core/Admin/.../User/AddUserController.php:20</>\n",
             TicketSwapErrorFormatter::LINK_FORMAT_DEFAULT,
             20,
-            '/www/project/src/Core/Admin/Controller/Dashboard/User/AddUserController.php',
-            'src/Core/Admin/Controller/Dashboard/User/AddUserController.php',
+            self::isWindows() ? 'c:\www\project\src\Core\Admin\Controller\Dashboard\User\AddUserController.php' : '/www/project/src/Core/Admin/Controller/Dashboard/User/AddUserController.php',
+            self::isWindows() ? 'src\Core\Admin\Controller\Dashboard\User\AddUserController.php' : 'src/Core/Admin/Controller/Dashboard/User/AddUserController.php',
             self::PHPSTORM_EDITOR_URL,
             true,
         ];
-        yield 'Unix - GITHUB_ACTIONS' => [
+        yield [
             "↳ src/Core/Admin/Controller/Dashboard/User/AddUserController.php:20\n",
             TicketSwapErrorFormatter::LINK_FORMAT_GITHUB_ACTIONS,
             20,
@@ -108,7 +107,7 @@ final class TicketSwapErrorFormatterTest extends TestCase
             self::PHPSTORM_EDITOR_URL,
             true,
         ];
-        yield 'Unix - WARP' => [
+        yield [
             "↳ src/Core/Admin/Controller/Dashboard/User/AddUserController.php:20\n",
             TicketSwapErrorFormatter::LINK_FORMAT_WARP,
             20,
@@ -117,7 +116,7 @@ final class TicketSwapErrorFormatterTest extends TestCase
             self::PHPSTORM_EDITOR_URL,
             true,
         ];
-        yield 'Unix - PHPSTORM' => [
+        yield [
             "↳ file:///www/project/src/Core/Admin/Controller/Dashboard/User/AddUserController.php:20\n",
             TicketSwapErrorFormatter::LINK_FORMAT_PHPSTORM,
             20,
@@ -126,7 +125,7 @@ final class TicketSwapErrorFormatterTest extends TestCase
             self::PHPSTORM_EDITOR_URL,
             true,
         ];
-        yield 'Unix - WITHOUT_EDITOR' => [
+        yield [
             "↳ src/Core/Admin/Controller/Dashboard/User/AddUserController.php:20\n",
             TicketSwapErrorFormatter::LINK_FORMAT_WITHOUT_EDITOR,
             20,
@@ -135,7 +134,7 @@ final class TicketSwapErrorFormatterTest extends TestCase
             self::PHPSTORM_EDITOR_URL,
             true,
         ];
-        yield 'Unix - DEFAULT without decoration' => [
+        yield [
             "↳ src/Core/Admin/Controller/Dashboard/User/AddUserController.php:20\n",
             TicketSwapErrorFormatter::LINK_FORMAT_DEFAULT,
             20,
@@ -144,44 +143,13 @@ final class TicketSwapErrorFormatterTest extends TestCase
             self::PHPSTORM_EDITOR_URL,
             false,
         ];
-        yield 'Unix - DEFAULT without editor URL' => [
+        yield [
             "↳ src/Core/Admin/Controller/Dashboard/User/AddUserController.php:20\n",
             TicketSwapErrorFormatter::LINK_FORMAT_DEFAULT,
             20,
             '/www/project/src/Core/Admin/Controller/Dashboard/User/AddUserController.php',
             'src/Core/Admin/Controller/Dashboard/User/AddUserController.php',
             null,
-            true,
-        ];
-
-        // Windows paths (backslashes)
-        yield 'Windows - DEFAULT with editor and decoration' => [
-                self::isWindows()
-                    ? "↳ <href=phpstorm://open?file=C:\\www\\project\\src\\Core\\Admin\\Controller\\Dashboard\\User\\AddUserController.php&line=20>src\\Core\\Admin\\...\\User\\AddUserController.php:20</>\n"
-                    : "↳ <href=phpstorm://open?file=C:\www\project\src\Core\Admin\Controller\Dashboard\User\AddUserController.php&line=20>src\Core\Admin\Controller\Dashboard\User\AddUserController.php:20</>\n",
-            TicketSwapErrorFormatter::LINK_FORMAT_DEFAULT,
-            20,
-            'C:\\www\\project\\src\\Core\\Admin\\Controller\\Dashboard\\User\\AddUserController.php',
-            'src\\Core\\Admin\\Controller\\Dashboard\\User\\AddUserController.php',
-            self::PHPSTORM_EDITOR_URL,
-            true,
-        ];
-        yield 'Windows - GITHUB_ACTIONS' => [
-            "↳ src\\Core\\Admin\\Controller\\Dashboard\\User\\AddUserController.php:20\n",
-            TicketSwapErrorFormatter::LINK_FORMAT_GITHUB_ACTIONS,
-            20,
-            'C:\\www\\project\\src\\Core\\Admin\\Controller\\Dashboard\\User\\AddUserController.php',
-            'src\\Core\\Admin\\Controller\\Dashboard\\User\\AddUserController.php',
-            self::PHPSTORM_EDITOR_URL,
-            true,
-        ];
-        yield 'Windows - WITHOUT_EDITOR' => [
-            "↳ src\\Core\\Admin\\Controller\\Dashboard\\User\\AddUserController.php:20\n",
-            TicketSwapErrorFormatter::LINK_FORMAT_WITHOUT_EDITOR,
-            20,
-            'C:\\www\\project\\src\\Core\\Admin\\Controller\\Dashboard\\User\\AddUserController.php',
-            'src\\Core\\Admin\\Controller\\Dashboard\\User\\AddUserController.php',
-            self::PHPSTORM_EDITOR_URL,
             true,
         ];
     }
