@@ -89,7 +89,9 @@ final class TicketSwapErrorFormatterTest extends TestCase
     {
         // Unix/Linux paths (forward slashes)
         yield 'Unix - DEFAULT with editor and decoration' => [
-            "↳ <href=phpstorm://open?file=/www/project/src/Core/Admin/Controller/Dashboard/User/AddUserController.php&line=20>src/Core/Admin/Controller/Dashboard/User/AddUserController.php:20</>\n",
+            self::isWindows()
+                ? "↳ <href=phpstorm://open?file=/www/project/src/Core/Admin/Controller/Dashboard/User/AddUserController.php&line=20>src/Core/Admin/Controller/Dashboard/User/AddUserController.php:20</>\n"
+                : "↳ <href=phpstorm://open?file=/www/project/src/Core/Admin/Controller/Dashboard/User/AddUserController.php&line=20>src/Core/Admin/.../User/AddUserController.php:20</>\n",
             TicketSwapErrorFormatter::LINK_FORMAT_DEFAULT,
             20,
             '/www/project/src/Core/Admin/Controller/Dashboard/User/AddUserController.php',
@@ -154,7 +156,9 @@ final class TicketSwapErrorFormatterTest extends TestCase
 
         // Windows paths (backslashes)
         yield 'Windows - DEFAULT with editor and decoration' => [
-            "↳ <href=phpstorm://open?file=C:\\www\\project\\src\\Core\\Admin\\Controller\\Dashboard\\User\\AddUserController.php&line=20>src\\Core\\Admin\\...\\User\\AddUserController.php:20</>\n",
+                self::isWindows()
+                    ? "↳ <href=phpstorm://open?file=C:\\www\\project\\src\\Core\\Admin\\Controller\\Dashboard\\User\\AddUserController.php&line=20>src\\Core\\Admin\\...\\User\\AddUserController.php:20</>\n"
+                    : "↳ <href=phpstorm://open?file=C:\www\project\src\Core\Admin\Controller\Dashboard\User\AddUserController.php&line=20>src\Core\Admin\Controller\Dashboard\User\AddUserController.php:20</>\n",
             TicketSwapErrorFormatter::LINK_FORMAT_DEFAULT,
             20,
             'C:\\www\\project\\src\\Core\\Admin\\Controller\\Dashboard\\User\\AddUserController.php',
