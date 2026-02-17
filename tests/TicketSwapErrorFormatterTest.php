@@ -89,7 +89,7 @@ final class TicketSwapErrorFormatterTest extends TestCase
     {
         yield [
             self::isWindows()
-                ? "↳ <href=phpstorm://open?file=/www/project/src/Core/Admin/Controller/Dashboard/User/AddUserController.php&line=20>src/Core/Admin/Controller/Dashboard/User/AddUserController.php:20</>\n"
+                ? "↳ <href=phpstorm://open?file=c:\www\project\src\Core\Admin\Controller\Dashboard\User\AddUserController.php&line=20>src\Core\Admin\...\User\AddUserController.php:20</>\n"
                 : "↳ <href=phpstorm://open?file=/www/project/src/Core/Admin/Controller/Dashboard/User/AddUserController.php&line=20>src/Core/Admin/.../User/AddUserController.php:20</>\n",
             TicketSwapErrorFormatter::LINK_FORMAT_DEFAULT,
             20,
@@ -99,56 +99,68 @@ final class TicketSwapErrorFormatterTest extends TestCase
             true,
         ];
         yield [
-            "↳ src/Core/Admin/Controller/Dashboard/User/AddUserController.php:20\n",
+            self::isWindows()
+                ? "↳ src\\Core\\Admin\\Controller\\Dashboard\\User\\AddUserController.php:20\n"
+                : "↳ src/Core/Admin/Controller/Dashboard/User/AddUserController.php:20\n",
             TicketSwapErrorFormatter::LINK_FORMAT_GITHUB_ACTIONS,
             20,
-            '/www/project/src/Core/Admin/Controller/Dashboard/User/AddUserController.php',
-            'src/Core/Admin/Controller/Dashboard/User/AddUserController.php',
+            self::isWindows() ? 'c:\\www\\project\\src\\Core\\Admin\\Controller\\Dashboard\\User\\AddUserController.php' : '/www/project/src/Core/Admin/Controller/Dashboard/User/AddUserController.php',
+            self::isWindows() ? 'src\\Core\\Admin\\Controller\\Dashboard\\User\\AddUserController.php' : 'src/Core/Admin/Controller/Dashboard/User/AddUserController.php',
             self::PHPSTORM_EDITOR_URL,
             true,
         ];
         yield [
-            "↳ src/Core/Admin/Controller/Dashboard/User/AddUserController.php:20\n",
+            self::isWindows()
+                ? "↳ src\\Core\\Admin\\Controller\\Dashboard\\User\\AddUserController.php:20\n"
+                : "↳ src/Core/Admin/Controller/Dashboard/User/AddUserController.php:20\n",
             TicketSwapErrorFormatter::LINK_FORMAT_WARP,
             20,
-            '/www/project/src/Core/Admin/Controller/Dashboard/User/AddUserController.php',
-            'src/Core/Admin/Controller/Dashboard/User/AddUserController.php',
+            self::isWindows() ? 'c:\\www\\project\\src\\Core\\Admin\\Controller\\Dashboard\\User\\AddUserController.php' : '/www/project/src/Core/Admin/Controller/Dashboard/User/AddUserController.php',
+            self::isWindows() ? 'src\\Core\\Admin\\Controller\\Dashboard\\User\\AddUserController.php' : 'src/Core/Admin/Controller/Dashboard/User/AddUserController.php',
             self::PHPSTORM_EDITOR_URL,
             true,
         ];
         yield [
-            "↳ file:///www/project/src/Core/Admin/Controller/Dashboard/User/AddUserController.php:20\n",
+            self::isWindows()
+                ? "↳ file://c:\\www\\project\\src\\Core\\Admin\\Controller\\Dashboard\\User\\AddUserController.php:20\n"
+                : "↳ file:///www/project/src/Core/Admin/Controller/Dashboard/User/AddUserController.php:20\n",
             TicketSwapErrorFormatter::LINK_FORMAT_PHPSTORM,
             20,
-            '/www/project/src/Core/Admin/Controller/Dashboard/User/AddUserController.php',
-            'src/Core/Admin/Controller/Dashboard/User/AddUserController.php',
+            self::isWindows() ? 'c:\\www\\project\\src\\Core\\Admin\\Controller\\Dashboard\\User\\AddUserController.php' : '/www/project/src/Core/Admin/Controller/Dashboard/User/AddUserController.php',
+            self::isWindows() ? 'src\\Core\\Admin\\Controller\\Dashboard\\User\\AddUserController.php' : 'src/Core/Admin/Controller/Dashboard/User/AddUserController.php',
             self::PHPSTORM_EDITOR_URL,
             true,
         ];
         yield [
-            "↳ src/Core/Admin/Controller/Dashboard/User/AddUserController.php:20\n",
+            self::isWindows()
+                ? "↳ src\\Core\\Admin\\Controller\\Dashboard\\User\\AddUserController.php:20\n"
+                : "↳ src/Core/Admin/Controller/Dashboard/User/AddUserController.php:20\n",
             TicketSwapErrorFormatter::LINK_FORMAT_WITHOUT_EDITOR,
             20,
-            '/www/project/src/Core/Admin/Controller/Dashboard/User/AddUserController.php',
-            'src/Core/Admin/Controller/Dashboard/User/AddUserController.php',
+            self::isWindows() ? 'c:\\www\\project\\src\\Core\\Admin\\Controller\\Dashboard\\User\\AddUserController.php' : '/www/project/src/Core/Admin/Controller/Dashboard/User/AddUserController.php',
+            self::isWindows() ? 'src\\Core\\Admin\\Controller\\Dashboard\\User\\AddUserController.php' : 'src/Core/Admin/Controller/Dashboard/User/AddUserController.php',
             self::PHPSTORM_EDITOR_URL,
             true,
         ];
         yield [
-            "↳ src/Core/Admin/Controller/Dashboard/User/AddUserController.php:20\n",
+            self::isWindows()
+                ? "↳ src\\Core\\Admin\\Controller\\Dashboard\\User\\AddUserController.php:20\n"
+                : "↳ src/Core/Admin/Controller/Dashboard/User/AddUserController.php:20\n",
             TicketSwapErrorFormatter::LINK_FORMAT_DEFAULT,
             20,
-            '/www/project/src/Core/Admin/Controller/Dashboard/User/AddUserController.php',
-            'src/Core/Admin/Controller/Dashboard/User/AddUserController.php',
+            self::isWindows() ? 'c:\\www\\project\\src\\Core\\Admin\\Controller\\Dashboard\\User\\AddUserController.php' : '/www/project/src/Core/Admin/Controller/Dashboard/User/AddUserController.php',
+            self::isWindows() ? 'src\\Core\\Admin\\Controller\\Dashboard\\User\\AddUserController.php' : 'src/Core/Admin/Controller/Dashboard/User/AddUserController.php',
             self::PHPSTORM_EDITOR_URL,
             false,
         ];
         yield [
-            "↳ src/Core/Admin/Controller/Dashboard/User/AddUserController.php:20\n",
+            self::isWindows()
+                ? "↳ src\\Core\\Admin\\Controller\\Dashboard\\User\\AddUserController.php:20\n"
+                : "↳ src/Core/Admin/Controller/Dashboard/User/AddUserController.php:20\n",
             TicketSwapErrorFormatter::LINK_FORMAT_DEFAULT,
             20,
-            '/www/project/src/Core/Admin/Controller/Dashboard/User/AddUserController.php',
-            'src/Core/Admin/Controller/Dashboard/User/AddUserController.php',
+            self::isWindows() ? 'c:\\www\\project\\src\\Core\\Admin\\Controller\\Dashboard\\User\\AddUserController.php' : '/www/project/src/Core/Admin/Controller/Dashboard/User/AddUserController.php',
+            self::isWindows() ? 'src\\Core\\Admin\\Controller\\Dashboard\\User\\AddUserController.php' : 'src/Core/Admin/Controller/Dashboard/User/AddUserController.php',
             null,
             true,
         ];
