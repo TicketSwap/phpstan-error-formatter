@@ -164,6 +164,28 @@ final class TicketSwapErrorFormatterTest extends TestCase
             null,
             true,
         ];
+        yield 'line 0 with editor url' => [
+            self::isWindows()
+                ? "↳ <href=phpstorm://open?file=c:\www\project\src\Core\Admin\Controller\Dashboard\User\AddUserController.php&line=0>src\Core\Admin\...\User\AddUserController.php</>\n"
+                : "↳ <href=phpstorm://open?file=/www/project/src/Core/Admin/Controller/Dashboard/User/AddUserController.php&line=0>src/Core/Admin/.../User/AddUserController.php</>\n",
+            TicketSwapErrorFormatter::LINK_FORMAT_DEFAULT,
+            0,
+            self::isWindows() ? 'c:\www\project\src\Core\Admin\Controller\Dashboard\User\AddUserController.php' : '/www/project/src/Core/Admin/Controller/Dashboard/User/AddUserController.php',
+            self::isWindows() ? 'src\Core\Admin\Controller\Dashboard\User\AddUserController.php' : 'src/Core/Admin/Controller/Dashboard/User/AddUserController.php',
+            self::PHPSTORM_EDITOR_URL,
+            true,
+        ];
+        yield 'line 0 without editor url' => [
+            self::isWindows()
+                ? "↳ src\\Core\\Admin\\Controller\\Dashboard\\User\\AddUserController.php\n"
+                : "↳ src/Core/Admin/Controller/Dashboard/User/AddUserController.php\n",
+            TicketSwapErrorFormatter::LINK_FORMAT_WITHOUT_EDITOR,
+            0,
+            self::isWindows() ? 'c:\\www\\project\\src\\Core\\Admin\\Controller\\Dashboard\\User\\AddUserController.php' : '/www/project/src/Core/Admin/Controller/Dashboard/User/AddUserController.php',
+            self::isWindows() ? 'src\\Core\\Admin\\Controller\\Dashboard\\User\\AddUserController.php' : 'src/Core/Admin/Controller/Dashboard/User/AddUserController.php',
+            null,
+            true,
+        ];
     }
 
     /**
