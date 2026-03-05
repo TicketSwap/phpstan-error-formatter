@@ -262,7 +262,7 @@ final class TicketSwapErrorFormatterTest extends TestCase
             true
         ];
         yield [
-            "Array has 3 duplicate keys with value '<fg=yellow>App\Activity</>' (<fg=yellow>\App\Activity</>::class).",
+            "Array has 3 duplicate keys with value '<fg=yellow>App\Activity</>' (<fg=yellow>\App\Activity::class</>).",
             "Array has 3 duplicate keys with value 'App\Activity' (\App\Activity::class).",
             null,
             null,
@@ -278,6 +278,27 @@ final class TicketSwapErrorFormatterTest extends TestCase
          yield [
             'Parameter #1 <fg=green>$callback</> of method <fg=yellow>Illuminate\Support\Collection</><<fg=magenta>int</>,<fg=magenta>mixed</>>::<fg=blue>map()</> expects',
             'Parameter #1 $callback of method Illuminate\Support\Collection<int,mixed>::map() expects',
+            null,
+            null,
+            true,
+        ];
+        yield [
+            'Something <fg=yellow>CommandHandlersHaveSerializableCommandFunctionalTest::SKIPPED</>.',
+            'Something CommandHandlersHaveSerializableCommandFunctionalTest::SKIPPED.',
+            null,
+            null,
+            true,
+        ];
+        yield [
+            'Constant <fg=yellow>App\Models\ExampleModel::SOME_CONSTANT</> is never used.',
+            'Constant App\Models\ExampleModel::SOME_CONSTANT is never used.',
+            null,
+            null,
+            true,
+        ];
+        yield [
+            'Case <fg=yellow>App\Enum\Status::Active</> not handled.',
+            'Case App\Enum\Status::Active not handled.',
             null,
             null,
             true,
