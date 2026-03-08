@@ -2,7 +2,7 @@ includes:
 	- phar://phpstan.phar/conf/bleedingEdge.neon
 	- extension.neon
 parameters:
-	level: 8
+	level: 10
 	paths:
 		- src
 	errorFormat: ticketswap
