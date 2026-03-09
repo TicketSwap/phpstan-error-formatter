@@ -28,9 +28,6 @@ final class TicketSwapErrorFormatter implements ErrorFormatter
     private ?string $editorUrl;
 
     /**
-     * @param RelativePathHelper $relativePathHelper
-     * @param ErrorFormatter $ciDetectedErrorFormatter
-     * @param string|null $editorUrl
      * @param array<string, mixed> $environmentVariables
      */
     public function __construct(
