@@ -218,7 +218,7 @@ final class TicketSwapErrorFormatter implements ErrorFormatter
 
         // Full Qualified Class Names
         $message = (string) preg_replace(
-            "/([\\\]?[A-Z0-9]{1}[A-Za-z0-9_\-]+[\\\]+[A-Z0-9]{1}[A-Za-z0-9_\-\\\]+(?:::[A-Za-z0-9_]+)?)/",
+            "/([\\\\]?[A-Z0-9]{1}[A-Za-z0-9_\\-]+[\\\\]+[A-Z0-9]{1}[A-Za-z0-9_\\-\\\\]+(?:::\\w+)?)/",
             '<fg=yellow>$1</>',
             $message,
         );
@@ -246,7 +246,7 @@ final class TicketSwapErrorFormatter implements ErrorFormatter
 
         // Class reference (e.g. ClassName::CONSTANT, ClassName::class)
         $message = (string) preg_replace(
-            '/(?<=[\s])([A-Z][A-Za-z0-9_]+::[A-Za-z0-9_]+)(?=[\.\s\|><,\(\)\{\}]|$)/',
+            '/(?<=[\s])([A-Z]\w+::\w+)(?=[\.\s\|><,\(\)\{\}]|$)/',
             '<fg=yellow>$1</>',
             $message,
         );
