@@ -169,7 +169,7 @@ final class TicketSwapErrorFormatter implements ErrorFormatter
                     $editorUrl,
                 ),
                 '{relativePath}' => $relativePath,
-                '{shortPath}' => self::trimPath($relativePath),
+                '{shortPath}' => AgentDetector::isAgent() ? $relativePath : self::trimPath($relativePath),
                 ':{line}' => $line === 0 ? '' : ':' . $line,
                 '{line}' => $line === 0 ? '' : (string) $line,
             ],

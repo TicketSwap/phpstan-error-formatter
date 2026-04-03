@@ -433,6 +433,31 @@ final class TicketSwapErrorFormatterTest extends TestCase
         };
     }
 
+    public function testLinkDoesNotTrimPathWhenAgent() : void
+    {
+        putenv('AI_AGENT=1');
+
+        try {
+            $result = TicketSwapErrorFormatter::link(
+                TicketSwapErrorFormatter::LINK_FORMAT_DEFAULT,
+                20,
+                self::isWindows() ? 'c:\www\project\src\Core\Admin\Controller\Dashboard\User\AddUserController.php' : '/www/project/src/Core/Admin/Controller/Dashboard/User/AddUserController.php',
+                self::isWindows() ? 'src\Core\Admin\Controller\Dashboard\User\AddUserController.php' : 'src/Core/Admin/Controller/Dashboard/User/AddUserController.php',
+                self::PHPSTORM_EDITOR_URL,
+                true,
+            );
+
+            $expectedRelativePath = self::isWindows()
+                ? 'src\Core\Admin\Controller\Dashboard\User\AddUserController.php'
+                : 'src/Core/Admin/Controller/Dashboard/User/AddUserController.php';
+
+            self::assertStringContainsString($expectedRelativePath, $result);
+            self::assertStringNotContainsString('...', $result);
+        } finally {
+            putenv('AI_AGENT');
+        }
+    }
+
     public function testFormatErrorsNoErrorsWritesNoErrorsAndReturnsZero() : void
     {
         $analysisResult = new AnalysisResult(
