@@ -101,7 +101,6 @@ final class TicketSwapErrorFormatter implements ErrorFormatter
                             $error->getIdentifier(),
                             $output->isDecorated(),
                         ),
-                        '{identifier}' => $error->getIdentifier(),
                         '{links}' => implode([
                             $this::link(
                                 $this->linkFormat,
