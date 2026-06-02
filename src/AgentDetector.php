@@ -34,10 +34,6 @@ final class AgentDetector
             }
         }
 
-        if (file_exists('/opt/.devin')) {
-            return true;
-        }
-
-        return false;
+        return file_exists('/opt/.devin');
     }
 }
